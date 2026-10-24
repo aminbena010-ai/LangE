@@ -1,0 +1,27 @@
+# Handles opacos (Fase 2): fopen/fclose con tipo opaque.
+
+external "../fixtures/opaque.c" fn abrir_archivo(
+    ruta:string,
+    modo:string
+) -> opaque
+
+external "../fixtures/opaque.c" fn cerrar_archivo(
+    recurso:opaque
+) -> int
+
+external "../fixtures/opaque.c" fn es_nulo(
+    recurso:opaque
+) -> int
+
+fn main():
+    var f:opaque = abrir_archivo("/dev/null", "w")
+    print(es_nulo(f))
+    print(cerrar_archivo(f))
+
+    var nada:opaque = null
+    print(es_nulo(nada))
+
+    if f == null:
+        print("f es null")
+    else:
+        print("f no es null")

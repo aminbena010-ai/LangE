@@ -1,0 +1,6 @@
+# El retorno de una función externa no puede ser un map.
+
+external "../fixtures/demo.c" fn rara() -> map<string, int>
+
+fn main():
+    print(len(rara()))

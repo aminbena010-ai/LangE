@@ -1,0 +1,89 @@
+# Biblioteca estandar: cadenas.
+#
+# Constantes de caracteres ASCII y utilidades de cadena que
+# complementan al modulo text. Las constantes se exponen como
+# funciones sin argumentos (mismo patron que math.pi).
+#
+# Uso:
+#     import string
+#     print(string.digits())
+#     print(string.swapcase("Hola"))
+
+import text
+
+fn digits() -> string:
+    return "0123456789"
+
+fn ascii_lowercase() -> string:
+    return "abcdefghijklmnopqrstuvwxyz"
+
+fn ascii_uppercase() -> string:
+    return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+fn ascii_letters() -> string:
+    return ascii_lowercase() + ascii_uppercase()
+
+fn hex_digits() -> string:
+    return "0123456789abcdef"
+
+fn punctuation() -> string:
+    return "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+
+fn whitespace() -> string:
+    return " \t\n\r"
+
+fn lstrip(t:string) -> string:
+    var espacios:string = whitespace()
+    var n:int = len(t)
+    var i:int = 0
+
+    while i < n and find(espacios, substring(t, i, 1)) >= 0:
+        i = i + 1
+
+    return substring(t, i, n - i)
+
+fn rstrip(t:string) -> string:
+    var espacios:string = whitespace()
+    var n:int = len(t)
+
+    while n > 0 and find(espacios, substring(t, n - 1, 1)) >= 0:
+        n = n - 1
+
+    return substring(t, 0, n)
+
+fn swapcase(t:string) -> string:
+    var minus:string = ascii_lowercase()
+    var mayus:string = ascii_uppercase()
+    var resultado:string = ""
+    var n:int = len(t)
+    var i:int = 0
+
+    while i < n:
+
+        var c:string = substring(t, i, 1)
+
+        if find(minus, c) >= 0:
+            resultado = resultado + upper(c)
+        else:
+
+            if find(mayus, c) >= 0:
+                resultado = resultado + lower(c)
+            else:
+                resultado = resultado + c
+
+        i = i + 1
+
+    return resultado
+
+fn capwords(t:string) -> string:
+    var palabras:list<string> = split(t, " ")
+    var i:int = 0
+
+    while i < len(palabras):
+
+        if len(palabras[i]) > 0:
+            palabras[i] = text.capitalize(palabras[i])
+
+        i = i + 1
+
+    return join(palabras, " ")

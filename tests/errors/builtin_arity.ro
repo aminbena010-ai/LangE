@@ -1,0 +1,4 @@
+# random() necesita dos argumentos.
+
+fn main():
+    print(random(1))

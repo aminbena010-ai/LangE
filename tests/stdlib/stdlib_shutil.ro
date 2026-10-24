@@ -1,0 +1,11 @@
+import shutil
+
+fn main():
+    var source:string = "/tmp/rivo_shutil_source.txt"
+    var destination:string = "/tmp/rivo_shutil_destination.txt"
+    print(write_file(source, "contenido"))
+    print(shutil.copy_text(source, destination))
+    print(read_file(destination))
+    print(shutil.path_size(destination))
+    print(shutil.delete_path(source))
+    print(shutil.delete_path(destination))

@@ -1,0 +1,37 @@
+# Biblioteca estandar: os.
+#
+# Subconjunto portable de operaciones del sistema operativo.
+# Las capacidades no disponibles en Rivo no se simulan.
+
+import files
+import system
+
+fn working_directory() -> string:
+    return system.current_directory()
+
+fn process_id() -> int:
+    return system.pid()
+
+fn environment_value(nombre:string) -> string:
+    return system.get_env(nombre)
+
+fn environment_is_set(nombre:string) -> bool:
+    return system.has_env(nombre)
+
+fn update_environment(nombre:string, valor:string) -> bool:
+    return system.set_env(nombre, valor)
+
+fn path_exists(ruta:string) -> bool:
+    return files.exists(ruta)
+
+fn path_size(ruta:string) -> int:
+    return files.file_size(ruta)
+
+fn delete_path(ruta:string) -> bool:
+    return files.delete_file(ruta)
+
+fn rename_path(origen:string, destino:string) -> bool:
+    return files.file_rename(origen, destino)
+
+fn make_directory(ruta:string) -> bool:
+    return files.create_directory(ruta)

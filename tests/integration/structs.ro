@@ -1,0 +1,29 @@
+struct Point:
+    var x:float
+    var y:float
+
+struct Person:
+    var name:string
+    var age:int
+    var home:Point
+
+fn move(point:Point) -> Point:
+    point.x += 1.0
+    return point
+
+fn main():
+    var first:Point = Point(1.0, 2.0)
+    first.x = 4.5
+    first.y += 1.5
+
+    var second:Point = Point(4.5, 3.5)
+    var same:Point = first
+    var person:Person = Person("Ada", 37, first)
+    var points:list<Point> = [first, second]
+
+    print(first)
+    print(person)
+    print(points[0].y)
+    print(first == second)
+    print(first == same)
+    print(move(first).x)

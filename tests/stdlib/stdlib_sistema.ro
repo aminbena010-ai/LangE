@@ -1,0 +1,19 @@
+import system
+
+fn main():
+    print(system.pid() > 0)
+    print(len(system.current_directory()) > 0)
+    print(len(system.hostname()) > 0)
+    print(len(system.os()) > 0)
+    print(len(system.architecture()) > 0)
+    print(system.has_env("RIVO_VAR_PRUEBA"))
+    print(system.set_env("RIVO_VAR_PRUEBA", "valor123"))
+    print(system.has_env("RIVO_VAR_PRUEBA"))
+    print(system.get_env("RIVO_VAR_PRUEBA"))
+    print(system.has_env("RIVO_VARIABLE_QUE_NO_EXISTE"))
+    print(system.get_env("RIVO_VARIABLE_QUE_NO_EXISTE") == "")
+    print(system.cpu_count() >= 1)
+    print(system.total_memory_mb() > 0)
+    print(system.available_memory_mb() >= 0)
+    print(system.uptime() >= 0)
+    print(len(system.username()) >= 0)

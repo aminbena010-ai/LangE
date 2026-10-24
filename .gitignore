@@ -1,0 +1,33 @@
+# Artefactos de compilación
+build/
+dist/
+target/
+*.o
+*.obj
+*.a
+*.lib
+*.exe
+*.bin
+*.ll
+*.vsix
+
+# Gestor de paquetes
+.rivo/
+vendor/
+
+# Notas internas y planificación (no forman parte del repo público)
+document/*
+!document/DOCUMENTACION.md
+calificacion.md
+report.md
+plan_*.md
+plan_lanzamiento_1.0.txt
+
+# Recursos no referenciados
+assets/
+
+# Entorno
+.cache/
+__pycache__/
+node_modules/
+*.log

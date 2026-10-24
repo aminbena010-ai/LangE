@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  # ----------------------------------------------------------
+  # Linux x86_64: plataforma de referencia. Suite completa
+  # incluyendo el runtime con ASan/UBSan.
+  # ----------------------------------------------------------
+  linux-x86_64:
+    name: Linux x86_64
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake clang llvm-dev build-essential
+
+      - name: Compilar
+        run: make build
+
+      - name: Tests e2e
+        run: make test
+
+      - name: Tests de runtime (ASan/UBSan)
+        run: make test-runtime
+
+  # ----------------------------------------------------------
+  # Linux ARM64 (runner nativo, sin emulación).
+  # ----------------------------------------------------------
+  linux-arm64:
+    name: Linux ARM64
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake clang llvm-dev build-essential
+
+      - name: Compilar
+        run: make build
+
+      - name: Tests e2e
+        run: make test
+
+  # ----------------------------------------------------------
+  # macOS (ARM64): LLVM de Homebrew.
+  # ----------------------------------------------------------
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar toolchain
+        run: brew install cmake llvm
+
+      - name: Configurar LLVM
+        run: |
+          echo "LLVM_DIR=$(brew --prefix llvm)/lib/cmake/llvm" >> "$GITHUB_ENV"
+          echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
+
+      - name: Compilar
+        run: make build
+
+      - name: Tests e2e
+        run: make test
+
+  # ----------------------------------------------------------
+  # Windows x64: experimental. Las fibras caen a ejecución
+  # síncrona (sin suspensión real en await), así que se
+  # omiten los tests de intercalado (ver
+  # docs/development/support.md).
+  # ----------------------------------------------------------
+  windows:
+    name: Windows x64 (experimental)
+    runs-on: windows-latest
+    continue-on-error: true
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar toolchain
+        run: |
+          choco install llvm -y --no-progress
+          echo "C:/Program Files/LLVM/bin" >> "$GITHUB_PATH"
+          echo "LLVM_DIR=C:/Program Files/LLVM/lib/cmake/llvm" >> "$GITHUB_ENV"
+
+      - name: Compilar
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          cmake --build build
+
+      - name: Tests e2e
+        run: sh tests/run_tests.sh

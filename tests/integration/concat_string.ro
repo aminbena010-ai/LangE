@@ -1,0 +1,10 @@
+fn main():
+    var saludo:string = "Hola " + "mundo"
+    print(saludo)
+    var acumulador:string = "x"
+    acumulador += "y"
+    print(acumulador)
+    print("1" + "2" + "3")
+    print("" + "vacio")
+    var nombre:string = input()
+    print("Hola " + nombre)

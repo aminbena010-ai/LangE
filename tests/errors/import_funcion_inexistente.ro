@@ -1,0 +1,4 @@
+from math import noexiste
+
+fn main():
+    print(1)

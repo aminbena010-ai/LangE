@@ -1,0 +1,27 @@
+# Biblioteca estandar: fecha.
+#
+# Trabaja con fechas "AAAA-MM-DD" y horas "HH:MM:SS".
+#
+# Las conversiones epoca <-> fecha son en UTC y puros
+# calculos de calendario: no dependen de la zona horaria.
+# Solo current_date, current_time y current_datetime usan
+# la hora local del sistema.
+#
+# Uso:
+#     import date
+#     print(date.current_date())
+#     print(date.days_between("2024-01-01", "2024-12-31"))
+
+external "c/date.c" fn current_date() -> string
+external "c/date.c" fn current_time() -> string
+external "c/date.c" fn current_datetime() -> string
+external "c/date.c" fn epoch_to_date(segundos:int) -> string
+external "c/date.c" fn date_to_epoch(fecha:string) -> int
+external "c/date.c" fn add_days(fecha:string, dias:int) -> string
+external "c/date.c" fn days_between(inicio:string, fin:string) -> int
+external "c/date.c" fn is_leap_year(anio:int) -> bool
+external "c/date.c" fn is_valid_date(fecha:string) -> bool
+external "c/date.c" fn day_of_week(fecha:string) -> int
+external "c/date.c" fn day_of_week_name(fecha:string) -> string
+external "c/date.c" fn days_in_month(anio:int, mes:int) -> int
+external "c/date.c" fn month_name(mes:int) -> string

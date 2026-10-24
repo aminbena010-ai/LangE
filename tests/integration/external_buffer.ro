@@ -1,0 +1,18 @@
+# buffer<T> en FFI (Fase 3.3): list<int> se pasa como
+# puntero + longitud a C.
+
+external "../fixtures/buffer.c" fn suma_buffer(
+    buf:buffer<int>
+) -> int
+
+external "../fixtures/buffer.c" fn media_buffer(
+    buf:buffer<int>
+) -> float
+
+fn main():
+    var nums:list<int> = [1, 2, 3, 4, 5]
+    print(suma_buffer(nums))
+    print(media_buffer(nums))
+
+    var vacio:list<int> = []
+    print(suma_buffer(vacio))

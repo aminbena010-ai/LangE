@@ -1,0 +1,24 @@
+# Biblioteca estandar: sistema.
+#
+# Identidad del proceso, entorno y recursos. Las consultas
+# de memoria y de tiempo de actividad solo dan valores en
+# Linux (en otro sistema devuelven -1).
+#
+# Uso:
+#     import system
+#     print(system.cpu_count())
+#     print(system.current_directory())
+
+external "c/system.c" fn pid() -> int
+external "c/system.c" fn current_directory() -> string
+external "c/system.c" fn hostname() -> string
+external "c/system.c" fn os() -> string
+external "c/system.c" fn architecture() -> string
+external "c/system.c" fn get_env(nombre:string) -> string
+external "c/system.c" fn has_env(nombre:string) -> bool
+external "c/system.c" fn set_env(nombre:string, valor:string) -> bool
+external "c/system.c" fn username() -> string
+external "c/system.c" fn cpu_count() -> int
+external "c/system.c" fn total_memory_mb() -> int
+external "c/system.c" fn available_memory_mb() -> int
+external "c/system.c" fn uptime() -> int

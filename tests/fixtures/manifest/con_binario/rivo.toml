@@ -1,0 +1,7 @@
+# Manifiesto con nombre propio para el ejecutable.
+
+[proyecto]
+nombre = "con_binario"
+version = "0.1.0"
+entrada = "programa.ro"
+binario = "app-especial"

@@ -1,0 +1,14 @@
+# Propiedad de strings FFI (Fase 2): borrowed (default),
+# static explícito y owned (copia a arena + free).
+
+external "../fixtures/strings.c" fn saludo_estatico() -> string
+external "../fixtures/strings.c" fn saludo_estatico2() -> string static
+external "../fixtures/strings.c" fn saludo_dinamico(
+    nombre:string
+) -> string owned
+
+fn main():
+    print(saludo_estatico())
+    print(saludo_estatico2())
+    print(saludo_dinamico("E++"))
+    print(saludo_dinamico("mundo"))

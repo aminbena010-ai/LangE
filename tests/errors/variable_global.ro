@@ -1,0 +1,7 @@
+# Sin globales: var/const solo dentro de funciones
+# (claude.md §4, decisión 2026-10-08)
+
+var s:string = "global"
+
+fn main():
+    print(s)

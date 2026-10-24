@@ -1,0 +1,6 @@
+struct Point:
+    var x:int
+
+fn main():
+    var point:Point = Point(1)
+    print(point.y)

@@ -1,0 +1,60 @@
+import mgl
+
+fn main():
+    print(mgl.event_none())
+    print(mgl.event_click())
+    print(mgl.event_keypress())
+    print(mgl.event_return())
+    print(mgl.event_check())
+    print(mgl.event_close())
+
+    print(mgl.event_type())
+    print(mgl.event_widget())
+    print(mgl.get(0))
+    print(mgl.get(99999))
+    print(mgl.destroy(0))
+    print(mgl.get(0) == "")
+    print(mgl.windows_open())
+
+    if mgl.available():
+        var v:int = mgl.window("t", 200, 120)
+        mgl.title(v, "titulo2")
+        mgl.geometry(v, 300, 200)
+        mgl.resizable(v, false, false)
+        mgl.font("sans", 14)
+        mgl.background(v, 200, 200, 200)
+
+        var e:int = mgl.entry(v, 10, 10, 100, 28, 16)
+        var c:int = mgl.checkbutton(v, "si", 10, 50)
+        var b:int = mgl.button(v, "ok", 10, 80, 90, 30)
+        var f:int = mgl.frame(v, 120, 10, 60, 60)
+
+        mgl.insert(e, "abc")
+
+        var ok:bool = mgl.get(e) == "abc"
+
+        mgl.delete(e, 1, -1)
+        ok = ok and mgl.get(e) == "a"
+
+        ok = ok and mgl.config(e, "text", "hola")
+        ok = ok and mgl.get(e) == "hola"
+
+        ok = ok and mgl.config(e, "fg", "30,30,30")
+        ok = ok and mgl.config(b, "bg", "30,30,30")
+        ok = ok and mgl.config(e, "state", "disabled")
+        ok = ok and not mgl.config(e, "state", "foo")
+
+        ok = ok and mgl.config(c, "checked", "true")
+        ok = ok and mgl.get(c) == "1"
+        ok = ok and mgl.config(c, "checked", "false")
+        ok = ok and mgl.get(c) == "0"
+
+        ok = ok and not mgl.config(f, "text", "x")
+        ok = ok and not mgl.config(e, "checked", "true")
+
+        ok = ok and mgl.destroy(v)
+
+        if not ok:
+            print("fallo-api")
+
+    print("ok")

@@ -1,0 +1,161 @@
+# Biblioteca estandar: validacion.
+#
+# Comprobaciones sobre texto y enteros. Los valores de texto
+# vacios no son validos por defecto (no_vacio, letras,
+# alfanumerico, numerico, es_float).
+#
+# es_float exige el punto: "3.14" si, "3" no (eso es
+# numerico). en_rango incluye los dos extremos.
+#
+# Uso:
+#     import validation
+#     print(validation.numeric("42"))
+
+fn _digit(c:string) -> bool:
+    return find("0123456789", c) >= 0
+
+fn _letter(c:string) -> bool:
+    return find("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", c) >= 0
+
+fn not_empty(t:string) -> bool:
+    return len(t) > 0
+
+fn min_length(t:string, minimo:int) -> bool:
+    return len(t) >= minimo
+
+fn max_length(t:string, maximo:int) -> bool:
+    return len(t) <= maximo
+
+fn in_range(valor:int, limite_inferior:int, limite_superior:int) -> bool:
+    return valor >= limite_inferior and valor <= limite_superior
+
+fn numeric(t:string) -> bool:
+    var n:int = len(t)
+
+    if n == 0:
+        return false
+
+    var inicio:int = 0
+
+    if substring(t, 0, 1) == "-" or substring(t, 0, 1) == "+":
+        inicio = 1
+
+    if inicio == n:
+        return false
+
+    var i:int = inicio
+
+    while i < n:
+
+        if not _digit(substring(t, i, 1)):
+            return false
+
+        i = i + 1
+
+    return true
+
+fn is_float(t:string) -> bool:
+    var n:int = len(t)
+
+    if n == 0:
+        return false
+
+    var inicio:int = 0
+
+    if substring(t, 0, 1) == "-" or substring(t, 0, 1) == "+":
+        inicio = 1
+
+    var puntos:int = 0
+    var digitos_antes:int = 0
+    var digitos_despues:int = 0
+    var i:int = inicio
+
+    while i < n:
+
+        var c:string = substring(t, i, 1)
+
+        if c == ".":
+            puntos = puntos + 1
+        else:
+
+            if _digit(c):
+
+                if puntos == 0:
+                    digitos_antes = digitos_antes + 1
+                else:
+                    digitos_despues = digitos_despues + 1
+            else:
+                return false
+
+        i = i + 1
+
+    return puntos == 1 and digitos_antes > 0 and digitos_despues > 0
+
+fn letters(t:string) -> bool:
+    var n:int = len(t)
+
+    if n == 0:
+        return false
+
+    var i:int = 0
+
+    while i < n:
+
+        if not _letter(substring(t, i, 1)):
+            return false
+
+        i = i + 1
+
+    return true
+
+fn alphanumeric(t:string) -> bool:
+    var n:int = len(t)
+
+    if n == 0:
+        return false
+
+    var i:int = 0
+
+    while i < n:
+
+        var c:string = substring(t, i, 1)
+
+        if not (_letter(c) or _digit(c)):
+            return false
+
+        i = i + 1
+
+    return true
+
+fn is_email(t:string) -> bool:
+    var n:int = len(t)
+
+    if n < 5:
+        return false
+
+    if find(t, " ") >= 0:
+        return false
+
+    var trozos:list<string> = split(t, "@")
+
+    if len(trozos) != 2:
+        return false
+
+    var local:string = trozos[0]
+    var dominio:string = trozos[1]
+
+    if len(local) == 0 or len(dominio) == 0:
+        return false
+
+    if find(dominio, "..") >= 0:
+        return false
+
+    var punto:int = find(dominio, ".")
+
+    if punto <= 0:
+        return false
+
+    if punto >= len(dominio) - 1:
+        return false
+
+    return true

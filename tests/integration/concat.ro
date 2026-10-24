@@ -1,0 +1,6 @@
+# Builtin concat(a, b) -> string (claude.md §26.1)
+
+fn main():
+    var nombre:string = "E++"
+    print(concat("hola ", nombre))
+    print(concat(concat("a", "b"), "c"))

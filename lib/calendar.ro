@@ -1,0 +1,20 @@
+# Biblioteca estandar: calendar.
+#
+# Consultas sencillas de calendario gregoriano.
+
+import date
+
+fn leap_year(year:int) -> bool:
+    return date.is_leap_year(year)
+
+fn month_length(year:int, month:int) -> int:
+    return date.days_in_month(year, month)
+
+fn month_label(month:int) -> string:
+    return date.month_name(month)
+
+fn weekday_index(iso_date:string) -> int:
+    return date.day_of_week(iso_date)
+
+fn weekday_label(iso_date:string) -> string:
+    return date.day_of_week_name(iso_date)

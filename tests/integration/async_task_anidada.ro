@@ -1,0 +1,10 @@
+async fn interno() -> int:
+    return 5
+
+async fn externo() -> task<int>:
+    return interno()
+
+fn main():
+    var t:task<task<int>> = externo()
+    var u:task<int> = await t
+    print(await u)

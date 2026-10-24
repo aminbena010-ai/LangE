@@ -1,0 +1,4 @@
+import fantasma
+
+fn main():
+    print(1)

@@ -1,0 +1,6 @@
+# -> void explícito en una función externa.
+
+external "../fixtures/demo.c" fn saludo(nombre:string) -> void
+
+fn main():
+    saludo("E++")

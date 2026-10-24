@@ -1,0 +1,4 @@
+import circ_a
+
+fn main():
+    print(1)

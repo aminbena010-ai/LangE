@@ -1,0 +1,22 @@
+# Funciones de texto (fase 2.1): upper, lower, trim,
+# substring, replace, contains, starts_with, ends_with,
+# find, split y join.
+
+fn main():
+    print(upper("hola E++"))
+    print(lower("HOLA E++"))
+    print(trim("  espacio  "))
+    print(substring("abcdefgh", 3, 4))
+    print(replace("tunel tunel", "tun", "TUN"))
+    print(contains("el archivo txt", "archivo"))
+    print(starts_with("E++", "E+"))
+    print(ends_with("E++", "++"))
+    print(find("programa", "gra"))
+    print(find("programa", "xyz"))
+    var trozos:list<string> = split("uno,dos,tres", ",")
+    print(trozos.len())
+    print(trozos[2])
+    print(join(trozos, " "))
+    var letras:list<string> = split("ab", "")
+    print(letras.len())
+    print(join(letras, "-"))

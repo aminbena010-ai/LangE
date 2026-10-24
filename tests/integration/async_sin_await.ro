@@ -1,0 +1,7 @@
+async fn tarea() -> int:
+    print("tarea")
+    return 7
+
+fn main():
+    var t:task<int> = tarea()
+    print("main")

@@ -1,0 +1,8 @@
+# Ficheros (fase 2.1): write_file, read_file y file_exists.
+
+fn main():
+    var ruta:string = "/tmp/rivo_test_integracion.txt"
+    print(write_file(ruta, "contenido de prueba"))
+    print(file_exists(ruta))
+    print(read_file(ruta))
+    print(file_exists("/tmp/rivo_no_existe_integracion.txt"))

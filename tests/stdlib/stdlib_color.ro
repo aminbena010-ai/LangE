@@ -1,0 +1,46 @@
+# Pruebas de la biblioteca color.
+#
+# No se imprimen los codigos (son bytes ESC): se comprueban
+# con len y con no_color para que la salida sea texto plano.
+
+import color
+
+fn main():
+    print(len(color.red("hola")))
+    print(color.no_color(color.red("hola")))
+
+    print(len(color.bold("ab")))
+    print(color.no_color(color.bold("ab")))
+
+    print(len(color.colorize("x", 36)))
+    print(color.no_color(color.colorize("x", 36)))
+
+    print(len(color.reset("x")))
+    print(color.no_color(color.reset("x")))
+
+    print(color.no_color(color.blue(color.bold("hola"))))
+    print(color.no_color("texto plano"))
+
+    print(len(color.green("")))
+    print(len(color.gray("a")))
+    print(len(color.underline("a")))
+    print(len(color.invert("a")))
+
+    print(color.no_color(color.magenta(color.cyan(color.white("juntos")))))
+
+    # 256 colores: \033[38;5;Nm texto \033[0m
+    # len = 5 + len("38;5;208") + 1 + len(texto) + 4 = 10 + 8 + texto
+    print(len(color.color_256("x", 208)))
+    print(color.no_color(color.color_256("x", 208)))
+    print(len(color.color_256_fondo("x", 52)))
+    print(color.no_color(color.color_256_fondo("x", 52)))
+
+    # RGB: \033[38;2;R;G;Bm texto \033[0m
+    print(len(color.color_rgb("x", 255, 128, 0)))
+    print(color.no_color(color.color_rgb("x", 255, 128, 0)))
+    print(len(color.color_rgb_fondo("x", 0, 0, 0)))
+    print(color.no_color(color.color_rgb_fondo("x", 10, 20, 30)))
+
+    # Recorte de rangos fuera de 0-255
+    print(color.no_color(color.color_256("r", 999)))
+    print(color.no_color(color.color_rgb("r", -5, 300, 0)))

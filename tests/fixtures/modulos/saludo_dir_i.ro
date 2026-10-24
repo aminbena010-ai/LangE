@@ -1,0 +1,6 @@
+# Modulo de prueba para el flag -I de la CLI.
+# No esta junto al programa que lo importa: solo se
+# encuentra con `-I tests/fixtures/modulos`.
+
+fn mensaje_desde_i() -> string:
+    return "modulo via -I"

@@ -1,0 +1,21 @@
+# Biblioteca estandar: platform.
+#
+# Informacion de la plataforma obtenida por el soporte de
+# sistema disponible en el runtime.
+
+import system
+
+fn system_name() -> string:
+    return system.os()
+
+fn node() -> string:
+    return system.hostname()
+
+fn machine() -> string:
+    return system.architecture()
+
+fn processor_count() -> int:
+    return system.cpu_count()
+
+fn user_name() -> string:
+    return system.username()

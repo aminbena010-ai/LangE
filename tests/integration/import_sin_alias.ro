@@ -1,0 +1,4 @@
+import math
+
+fn main():
+    print(math.sum(10, 20))

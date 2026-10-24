@@ -1,0 +1,6 @@
+fn main():
+    try:
+        print("a")
+    catch error:
+        print(error)
+    print(error)

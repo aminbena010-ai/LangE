@@ -1,0 +1,6 @@
+# int / int ya no es float: asignarlo a un float tiene
+# que dar un error de tipo claro, no basura silenciosa.
+
+fn main():
+    var d:float = 7 / 2
+    print(d)

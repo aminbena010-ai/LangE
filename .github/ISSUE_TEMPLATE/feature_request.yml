@@ -1,0 +1,23 @@
+name: Propuesta
+description: Nueva función o mejora del lenguaje, runtime o herramientas
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema o necesidad
+      description: ¿Qué falta o qué resulta incómodo hoy?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Propuesta
+      description: Sintaxis, comportamiento y alternativas consideradas.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impacto
+      description: Compatibilidad, rendimiento, documentación y pruebas necesarias.

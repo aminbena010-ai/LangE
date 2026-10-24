@@ -1,0 +1,122 @@
+{
+  "main": {
+    "prefix": "main",
+    "body": ["fn main():", "    $0"],
+    "description": "Punto de entrada"
+  },
+  "fn": {
+    "prefix": "fn",
+    "body": ["fn ${1:nombre}(${2:argumentos}) -> ${3:int}:", "    $0"],
+    "description": "Función"
+  },
+  "struct": {
+    "prefix": "struct",
+    "body": ["struct ${1:Nombre}:", "    var ${2:campo}:${3:int}", "    $0"],
+    "description": "Struct de datos"
+  },
+  "if": {
+    "prefix": "if",
+    "body": ["if ${1:condicion}:", "    $0"],
+    "description": "Condición"
+  },
+  "else": {
+    "prefix": "else",
+    "body": ["else:", "    $0"],
+    "description": "Rama alternativa"
+  },
+  "while": {
+    "prefix": "while",
+    "body": ["while ${1:condicion}:", "    $0"],
+    "description": "Bucle while"
+  },
+  "for": {
+    "prefix": "for",
+    "body": ["for ${1:i} in ${2:range(10)}:", "    $0"],
+    "description": "Bucle for"
+  },
+  "try": {
+    "prefix": "try",
+    "body": ["try:", "    ${1:pass}", "catch ${2:error}:", "    $0"],
+    "description": "try/catch"
+  },
+  "var": {
+    "prefix": "var",
+    "body": ["var ${1:nombre}:${2:int} = ${0}"],
+    "description": "Variable"
+  },
+  "const": {
+    "prefix": "const",
+    "body": ["const ${1:nombre}:${2:string} = ${0}"],
+    "description": "Constante"
+  },
+  "return": {
+    "prefix": "ret",
+    "body": ["return ${0}"],
+    "description": "return"
+  },
+  "print": {
+    "prefix": "pr",
+    "body": "print(${0})",
+    "description": "Imprimir"
+  },
+  "fstring": {
+    "prefix": "fstr",
+    "body": "f\"{${1:variable}}\"",
+    "description": "f-string"
+  },
+  "input": {
+    "prefix": "in",
+    "body": "var ${1:texto}:string = input(\"${2:prompt}\")",
+    "description": "Leer de consola"
+  },
+  "import": {
+    "prefix": "imp",
+    "body": "import ${1:math}",
+    "description": "Importar módulo"
+  },
+  "from": {
+    "prefix": "from",
+    "body": "from ${1:modulo} import ${2:funcion}",
+    "description": "Importar de módulo"
+  },
+  "list": {
+    "prefix": "list",
+    "body": "var ${1:nombre}:list<${2:int}> = [${0}]",
+    "description": "Lista"
+  },
+  "map": {
+    "prefix": "map",
+    "body": "var ${1:nombre}:map<${2:string}, ${3:int}> = [\"${4:clave}\": ${0}]",
+    "description": "Mapa"
+  },
+  "external": {
+    "prefix": "ext",
+    "body": "external \"${1:archivo.c}\" fn ${2:nombre}(${3:argumentos}) -> ${4:int}",
+    "description": "Función externa en C"
+  },
+  "asyncfn": {
+    "prefix": "afn",
+    "body": ["async fn ${1:nombre}(${2:argumentos}) -> task<${3:int}>:", "    $0"],
+    "description": "Función asíncrona (devuelve task<T>)"
+  },
+  "await": {
+    "prefix": "aw",
+    "body": "await ${0}",
+    "description": "Esperar una task<T>"
+  },
+  "ifel": {
+    "prefix": "ifel",
+    "body": ["if ${1:condicion}:", "    ${2:pass}", "else:", "    $0"],
+    "description": "if / else"
+  },
+  "comment": {
+    "prefix": "cmt",
+    "body": ["#!", "    ${0}", "!#"],
+    "description": "Comentario de bloque #! ... !#"
+  },
+  "floordiv": {
+    "prefix": "fdiv",
+    "body": "${1:a} // ${0:b}",
+    "description": "División entera //"
+  }
+}

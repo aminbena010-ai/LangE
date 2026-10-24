@@ -1,0 +1,6 @@
+# El fichero C declarado no existe: se avisa en español.
+
+external "no_existe_en_ninguna_parte.c" fn fantasma() -> int
+
+fn main():
+    print(fantasma())

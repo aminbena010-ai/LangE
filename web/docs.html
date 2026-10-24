@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentación — Rivo</title>
+  <meta name="description" content="Documentación oficial de Rivo: empezar, sintaxis, tipos, funciones, control de flujo, colecciones, imports, errores, CLI y arquitectura del compilador.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      document.documentElement.classList.add("js");
+      try {
+        var t = localStorage.getItem("rivo-theme");
+        document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        Rivo <small>.ro</small>
+      </a>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Abrir el menú">☰</button>
+      <nav class="site-nav" id="site-nav" data-site-nav aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html" aria-current="page">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html">C++</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar el tema">☀</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <div class="container docs-layout">
+      <!-- Barra lateral -->
+      <aside class="docs-sidebar" id="docs-sidebar" data-docs-sidebar aria-label="Índice de la documentación">
+        <p class="sidebar-title">Índice</p>
+        <nav>
+          <a href="#empezar">1. Empezar</a>
+          <a href="#primer-programa">2. Tu primer programa</a>
+          <a href="#sintaxis">3. Sintaxis e indentación</a>
+          <a href="#tipos">4. Variables, constantes y tipos</a>
+          <a href="#operadores">5. Operadores y expresiones</a>
+          <a href="#funciones">6. Funciones</a>
+          <a href="#control">7. Control de flujo</a>
+          <a href="#cadenas">8. Cadenas y f-strings</a>
+          <a href="#colecciones">9. Listas y mapas</a>
+          <a href="#imports">10. Imports y módulos</a>
+          <a href="#builtins">11. Funciones incorporadas</a>
+          <a href="#stdlib">12. Biblioteca estándar</a>
+          <a href="#externas">13. Funciones externas en C</a>
+          <a href="#errores">14. Errores y diagnósticos</a>
+          <a href="#cli">15. CLI del compilador</a>
+          <a href="#arquitectura">16. Arquitectura</a>
+          <a href="#estado">17. Estado del proyecto</a>
+          <a href="#referencia">18. Referencia rápida</a>
+        </nav>
+      </aside>
+
+      <!-- Contenido -->
+      <article class="docs-content">
+        <header class="section-head">
+          <span class="eyebrow">Documentación oficial</span>
+          <h1>Documentación de Rivo</h1>
+          <p class="lead">
+            Rivo es un lenguaje de propósito general con sintaxis estilo Python
+            y Godot (GDScript), pero compilado en vez de interpretado. Tiene
+            tipos explícitos, bloques por indentación y un compilador en C con
+            backend LLVM. Esta guía describe el diseño aprobado y marca con
+            cuidado lo que ya está comprobado.
+          </p>
+          <div class="docs-toc-bar">
+            <button type="button" class="btn btn-ghost docs-toc-inline" data-docs-toggle aria-expanded="false" aria-controls="docs-sidebar">Índice de la documentación</button>
+          </div>
+        </header>
+
+        <!-- 1 -->
+        <section id="empezar">
+          <h2><span class="sec-num">01</span> Empezar</h2>
+          <h3>Requisitos</h3>
+          <ul class="clean">
+            <li>Un compilador de C compatible con C11 (GCC o Clang).</li>
+            <li>CMake 3.16 o posterior.</li>
+            <li>LLVM con sus archivos de desarrollo.</li>
+            <li><code>clang</code>, que el compilador usa para enlazar los programas generados.</li>
+          </ul>
+
+          <h3>Compilar el compilador</h3>
+          <pre><code>cmake -S . -B build
+cmake --build build
+./build/rivo --help
+./build/rivo --version</code></pre>
+
+          <h3>Instalación</h3>
+          <p>
+            <code>make install</code> instala Rivo en tu directorio de usuario
+            (por defecto <code>~/.local</code>, sin permisos especiales). El
+            binario encuentra su biblioteca estándar y su runtime por su propia
+            ubicación, sin variables de entorno:
+          </p>
+          <pre><code>make install
+rivo --help
+make install PREFIX=/otro/dir
+make uninstall</code></pre>
+          <p>
+            Instala <code>~/.local/bin/rivo</code> (compilador),
+            <code>~/.local/share/rivo/lib</code> (biblioteca estándar
+            <code>.ro</code>) y <code>~/.local/lib/librivo_runtime.a</code>
+            (runtime para enlazar). En el árbol de desarrollo el binario sigue
+            llamándose <code>build/rivo</code>.
+          </p>
+        </section>
+
+        <!-- 2 -->
+        <section id="primer-programa">
+          <h2><span class="sec-num">02</span> Tu primer programa</h2>
+          <p>Crea <code>hola.ro</code>:</p>
+          <pre><code data-lang="rivo">fn main():
+    print("Hola, mundo")
+</code></pre>
+          <p>Compílalo y ejecútalo:</p>
+          <pre><code>./build/rivo hola.ro
+./hola</code></pre>
+          <p>
+            <code>fn main()</code> es el punto de entrada. El cuerpo está
+            indentado; no se escriben llaves. También puedes elegir el ejecutable
+            de salida:
+          </p>
+          <pre><code>./build/rivo hola.ro -o saludo
+./saludo</code></pre>
+
+          <p>Un programa un poco más completo:</p>
+          <pre><code data-lang="rivo">fn doble(numero:int) -> int:
+    return numero * 2
+
+fn main():
+    var valor:int = 21
+    print(doble(valor))
+</code></pre>
+          <p>
+            El tipo de cada variable y parámetro se escribe explícitamente. Rivo
+            no infiere el tipo de una declaración.
+          </p>
+
+          <p>Un programa con la forma típica de Rivo: funciones cortas, nombres claros y control de flujo que se lee de arriba abajo:</p>
+          <pre><code data-lang="rivo">fn es_mayor(edad:int) -> bool:
+    return edad >= 18
+
+fn main():
+    var edad:int = 20
+
+    if es_mayor(edad):
+        print("Acceso concedido")
+    else:
+        print("Acceso denegado")
+
+    var nombres:list&lt;string&gt; = ["Ana", "Luis", "Roi"]
+
+    for nombre in nombres:
+        print(f"Bienvenido {nombre}")
+</code></pre>
+        </section>
+
+        <!-- 3 -->
+        <section id="sintaxis">
+          <h2><span class="sec-num">03</span> Sintaxis e indentación</h2>
+          <h3>Bloques</h3>
+          <p>
+            Los bloques empiezan después de <code>:</code> y se delimitan con
+            indentación:
+          </p>
+          <pre><code data-lang="rivo">if edad >= 18:
+    print("Adulto")
+else:
+    print("Menor")
+</code></pre>
+          <p>
+            No se usan <code>{}</code> para bloques ni existe
+            <code>elif</code>/<code>elseif</code>. Mantén la misma indentación
+            dentro de cada bloque. Una línea nueva termina una sentencia: las
+            expresiones y llamadas no continúan en la línea siguiente.
+          </p>
+          <p>
+            <code>pass</code> es la sentencia vacía reservada, útil para dejar
+            provisionalmente un bloque sin acciones:
+          </p>
+          <pre><code data-lang="rivo">fn pendiente():
+    pass
+</code></pre>
+
+          <p>
+            La indentación no es decorado: es la gramática. Un bloque anidado se
+            lee como un esquema, igual que el pseudocódigo:
+          </p>
+          <pre><code data-lang="rivo">fn clasificar(nota:int) -> string:
+    if nota >= 90:
+        return "sobresaliente"
+    else:
+        if nota >= 70:
+            return "notable"
+        else:
+            if nota >= 50:
+                return "suficiente"
+            else:
+                return "insuficiente"
+</code></pre>
+
+          <h3>Comentarios</h3>
+          <p>Un comentario de una línea empieza por <code>#</code>:</p>
+          <pre><code data-lang="rivo"># Calcular el total
+var total:int = 12
+</code></pre>
+          <p>
+            Un comentario de varias líneas empieza con <code>#!</code> y termina
+            en el primer <code>!#</code>. No se anida y un bloque sin cerrar es
+            un error de sintaxis. <code>//</code> no inicia un comentario:
+          </p>
+          <pre><code data-lang="rivo">#!
+Este bloque es un comentario.
+No se anida.
+!#
+</code></pre>
+
+          <h3>Visibilidad</h3>
+          <p>
+            Un identificador que empieza por <code>_</code> es privado; los demás
+            son públicos. La regla se aplica a funciones, variables, constantes y
+            parámetros. Los módulos solo exponen funciones públicas al importador.
+          </p>
+          <pre><code data-lang="rivo">fn _auxiliar(valor:int) -> int:
+    return valor + 1
+</code></pre>
+        </section>
+
+        <!-- 4 -->
+        <section id="tipos">
+          <h2><span class="sec-num">04</span> Variables, constantes y tipos</h2>
+          <p>
+            La forma de una variable es <code>var nombre:tipo = valor</code>; una
+            constante usa <code>const</code>:
+          </p>
+          <pre><code data-lang="rivo">fn main():
+    var edad:int = 20
+    edad = 21
+
+    const PI:float = 3.14159
+</code></pre>
+          <p>
+            Las variables pueden reasignarse y las constantes no. No hay
+            conversión implícita al asignar: un valor <code>int</code> no se
+            convierte automáticamente a <code>float</code>.
+          </p>
+          <div class="callout">
+            <p>
+              <strong>Ámbito global:</strong> <code>var</code> y <code>const</code>
+              se declaran dentro de funciones (también en módulos). A nivel global
+              el compilador reporta un error: no existen variables globales.
+            </p>
+          </div>
+
+          <h3>Tipos oficiales</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Tipo</th><th>Uso</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>int</code></td><td>Número entero.</td></tr>
+                <tr><td><code>float</code></td><td>Número con parte fraccionaria.</td></tr>
+                <tr><td><code>string</code></td><td>Texto; se concatena con <code>+</code>.</td></tr>
+                <tr><td><code>bool</code></td><td>Valor <code>true</code> o <code>false</code>.</td></tr>
+                <tr><td><code>char</code></td><td>Un carácter entre comillas simples, por ejemplo <code>'A'</code>.</td></tr>
+                <tr><td><code>list&lt;T&gt;</code></td><td>Lista cuyos elementos tienen el tipo <code>T</code>, por ejemplo <code>list&lt;int&gt;</code>.</td></tr>
+                <tr><td><code>map&lt;K, V&gt;</code></td><td>Mapa de claves <code>K</code> a valores <code>V</code>, por ejemplo <code>map&lt;string, int&gt;</code>.</td></tr>
+                <tr><td><code>null</code></td><td>Valor y tipo especial del lenguaje.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            No forman parte del lenguaje los tipos <code>void</code> ni
+            <code>any</code>. Una función sin tipo de retorno explícito no
+            devuelve un valor; eso no añade un tipo <code>void</code> al lenguaje.
+          </p>
+
+          <p>Los ocho tipos oficiales, declarados de forma explícita:</p>
+          <pre><code data-lang="rivo">fn main():
+    var entero:int = 42
+    var flotante:float = 3.14
+    var texto:string = "Rivo"
+    var flag:bool = true
+    var letra:char = 'R'
+    var nada:null = null
+    var lista:list&lt;int&gt; = [1, 2, 3]
+    var tabla:map&lt;string, int&gt; = ["uno": 1]
+
+    print(f"{entero} {flotante} {texto} {flag} {letra}")
+    print(lista.len())
+    print(tabla["uno"])
+</code></pre>
+        </section>
+
+        <!-- 5 -->
+        <section id="operadores">
+          <h2><span class="sec-num">05</span> Operadores y expresiones</h2>
+          <h3>Precedencia (de menor a mayor)</h3>
+          <ol class="clean">
+            <li>Asignación: <code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>.</li>
+            <li><code>or</code></li>
+            <li><code>and</code></li>
+            <li>Comparaciones: <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>.</li>
+            <li>Suma y resta: <code>+</code>, <code>-</code>.</li>
+            <li>Multiplicación, división y resto: <code>*</code>, <code>/</code>, <code>%</code>.</li>
+            <li>Operadores unarios: <code>-valor</code>, <code>not</code>.</li>
+          </ol>
+          <p>Por ejemplo, <code>a + b * c</code> equivale a <code>a + (b * c)</code>.</p>
+
+          <h3>Aritmética y división</h3>
+          <p>
+            La división entre dos enteros produce un entero truncado hacia cero.
+            Si al menos un operando es <code>float</code>, el resultado es
+            <code>float</code>:
+          </p>
+          <pre><code data-lang="rivo">fn main():
+    var mitad:int = 7 / 2
+    var mitad_float:float = 7.0 / 2
+    # var invalido:float = 7 / 2   # error de tipo
+</code></pre>
+          <p>
+            <code>lista + otra_lista</code> crea una lista nueva sin modificar las
+            originales (exige el mismo tipo de elemento). Los mapas no admiten
+            <code>+</code>.
+          </p>
+
+          <h3>Comparaciones</h3>
+          <p>
+            <code>==</code> y <code>!=</code> comparan el <strong>contenido</strong>
+            de las cadenas (<code>strcmp</code>). No se admiten comparaciones de
+            orden entre cadenas, ni igualdad entre listas o mapas.
+          </p>
+
+          <h3>Asignación y comparación</h3>
+          <pre><code data-lang="rivo">fn main():
+    var puntos:int = 3
+    puntos = 4
+
+    if puntos == 4:
+        print("Cuatro")
+</code></pre>
+
+          <p>Precedencia y operadores compuestos en un solo vistazo:</p>
+          <pre><code data-lang="rivo">fn main():
+    var a:int = 2 + 3 * 4        # 14: multiplica antes
+    var b:int = (2 + 3) * 4      # 20: los paréntesis mandan
+
+    var cuenta:int = 10
+    cuenta -= 3                  # 7
+    cuenta *= 2                  # 14
+
+    var resto:int = 17 % 5       # 2
+    var activo:bool = true and not false
+
+    print(f"{a} {b} {cuenta} {resto} {activo}")
+</code></pre>
+        </section>
+
+        <!-- 6 -->
+        <section id="funciones">
+          <h2><span class="sec-num">06</span> Funciones</h2>
+          <p>
+            Las funciones se declaran con <code>fn</code>, parámetros tipados y
+            un tipo de retorno opcional:
+          </p>
+          <pre><code data-lang="rivo">fn sumar(a:int, b:int) -> int:
+    return a + b
+
+fn saludar(nombre:string):
+    print("Hola " + nombre)
+</code></pre>
+          <ul class="clean">
+            <li><code>return</code> con un valor debe coincidir con el tipo declarado.</li>
+            <li>Un nombre que empieza por <code>_</code> declara una función privada.</li>
+            <li><code>main</code> solo puede existir en el archivo principal, no en un módulo importado.</li>
+            <li>Los programas correctos terminan con código de salida cero salvo que fallen.</li>
+          </ul>
+
+          <p>
+            Funciones privadas como utilidades internas: se usan dentro del mismo
+            archivo y no forman parte de la interfaz del módulo.
+          </p>
+          <pre><code data-lang="rivo">fn _normalizar(texto:string) -> string:
+    return lower(trim(texto))
+
+fn presentar(nombre:string):
+    print("Hola, " + _normalizar(nombre))
+
+fn main():
+    presentar("  AMINE  ")
+    presentar("  rivo  ")
+</code></pre>
+        </section>
+
+        <!-- 7 -->
+        <section id="control">
+          <h2><span class="sec-num">07</span> Control de flujo</h2>
+          <h3>Condicionales</h3>
+          <pre><code data-lang="rivo">if temperatura > 30:
+    print("Hace calor")
+else:
+    print("Temperatura moderada")
+</code></pre>
+          <p>
+            Las condiciones usan <code>bool</code>; se combinan con
+            <code>and</code>, <code>or</code> y <code>not</code>. No existe
+            <code>elif</code>: para más ramas se anida otro <code>if</code> dentro
+            del <code>else</code>.
+          </p>
+
+          <h3><code>while</code></h3>
+          <pre><code data-lang="rivo">fn main():
+    var contador:int = 0
+    while contador < 3:
+        print(contador)
+        contador += 1
+</code></pre>
+
+          <p><code>break</code> y <code>continue</code> hacen el bucle legible sin rodeos:</p>
+          <pre><code data-lang="rivo">fn main():
+    var intentos:int = 0
+
+    while true:
+        intentos += 1
+
+        if intentos == 2:
+            continue          # se salta la iteración 2
+
+        if intentos > 4:
+            break             # termina el bucle
+
+        print(f"intento {intentos}")
+</code></pre>
+
+          <h3><code>for</code></h3>
+          <p>La forma es <code>for variable in iterable:</code>:</p>
+          <pre><code data-lang="rivo">for nombre in nombres:
+    print(nombre)
+</code></pre>
+
+          <p>Con <code>range</code> y condiciones, un bucle se lee como una receta:</p>
+          <pre><code data-lang="rivo">fn main():
+    for i in range(0, 4):
+        if i % 2 == 0:
+            print(f"{i} es par")
+        else:
+            print(f"{i} es impar")
+</code></pre>
+          <p>
+            <code>break</code> termina el bucle y <code>continue</code> pasa a la
+            siguiente iteración; ambos solo son válidos dentro de un bucle.
+          </p>
+
+          <h3><code>try</code> y <code>catch</code></h3>
+          <pre><code data-lang="rivo">try:
+    var valor:int = numeros[10]
+    print(valor)
+catch error:
+    print("Fallo: " + error)
+</code></pre>
+          <div class="callout">
+            <p>
+              <strong>Reglas:</strong> <code>try</code> exige exactamente un
+              <code>catch</code>. <code>catch nombre</code> declara
+              <code>nombre</code> como <code>string</code> con el mensaje del
+              fallo. Se capturan los abortos de runtime (índice fuera de rango,
+              clave de map inexistente, fichero inexistente, rangos inválidos,
+              fallos de memoria). <code>return</code>, <code>break</code> y
+              <code>continue</code> están prohibidos dentro de <code>try</code>.
+              No existe <code>throw</code>.
+            </p>
+          </div>
+        </section>
+
+        <!-- 8 -->
+        <section id="cadenas">
+          <h2><span class="sec-num">08</span> Cadenas y f-strings</h2>
+          <p>Las cadenas se escriben con comillas dobles y admiten estos escapes:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Escape</th><th>Significado</th></tr></thead>
+              <tbody>
+                <tr><td><code>\n</code></td><td>Nueva línea</td></tr>
+                <tr><td><code>\r</code></td><td>Retorno de carro</td></tr>
+                <tr><td><code>\t</code></td><td>Tabulador</td></tr>
+                <tr><td><code>\0</code></td><td>Carácter nulo</td></tr>
+                <tr><td><code>\\</code></td><td>Barra invertida</td></tr>
+                <tr><td><code>\"</code></td><td>Comilla doble</td></tr>
+                <tr><td><code>\'</code></td><td>Comilla simple</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Los escapes desconocidos se conservan como barra y carácter. La
+            concatenación usa <code>+</code> o <code>concat(a, b)</code>. Las
+            cadenas viven en memoria gestionada por el runtime: el programa no las
+            libera manualmente.
+          </p>
+
+          <h3>F-strings</h3>
+          <p>Un prefijo <code>f</code> permite interpolar valores dentro de <code>{}</code>:</p>
+          <pre><code data-lang="rivo">fn main():
+    var nombre:string = "Ana"
+    var edad:int = 20
+    print(f"Hola {nombre}, tienes {edad} años")
+</code></pre>
+
+          <p>Escapes y f-strings con funciones e índices dentro de las llaves:</p>
+          <pre><code data-lang="rivo">fn main():
+    var ruta:string = "docs\\web"
+    print("primera\tcolumna\nsegunda")
+
+    var nombre:string = "rivo"
+    print(f"{upper(nombre)} tiene {len(nombre)} letras")
+</code></pre>
+          <ul class="clean">
+            <li><code>{{</code> y <code>}}</code> producen llaves literales.</li>
+            <li>Dentro de las llaves se admite una primaria con sufijos (llamada, miembro, índice), pero no operadores: <code>f"{a + b}"</code> es error de sintaxis.</li>
+            <li>Solo se interpolan <code>int</code>, <code>float</code>, <code>string</code>, <code>bool</code> y <code>char</code>. Interpolar listas, mapas o <code>null</code> es error semántico.</li>
+            <li>El resultado de un f-string siempre es <code>string</code>.</li>
+          </ul>
+        </section>
+
+        <!-- 9 -->
+        <section id="colecciones">
+          <h2><span class="sec-num">09</span> Listas y mapas</h2>
+          <h3>Listas</h3>
+          <pre><code data-lang="rivo">fn main():
+    var numeros:list&lt;int&gt; = [1, 2, 3]
+    var primero:int = numeros[0]
+    numeros[0] = 10
+    numeros.add(4)
+</code></pre>
+
+          <p>Listas que se leen como una lista de la compra:</p>
+          <pre><code data-lang="rivo">fn main():
+    var compra:list&lt;string&gt; = ["pan", "leche"]
+    compra.add("huevos")
+
+    for producto in compra:
+        print("- " + producto)
+
+    compra.remove("leche")
+    print(f"quedan {len(compra)} productos")
+</code></pre>
+          <p>
+            El diseño contempla <code>add</code>, <code>remove</code>,
+            <code>len()</code> e indexación. Leer o escribir un índice fuera de
+            rango termina el programa con un error de runtime (capturable con
+            <code>try</code>/<code>catch</code>). La concatenación
+            <code>lista + otra</code> exige el mismo tipo de elemento.
+          </p>
+
+          <h3>Mapas</h3>
+          <pre><code data-lang="rivo">fn main():
+    var edades:map&lt;string, int&gt; = [
+        "Ana": 20,
+        "Luis": 25
+    ]
+
+    edades["Ana"] = 21
+    edades["Pedro"] = 30
+</code></pre>
+          <p>
+            Los mapas no usan llaves: se escriben con corchetes y pares
+            <code>clave: valor</code>. Consultar una clave inexistente es un error
+            de runtime. Los mapas no admiten <code>+</code> ni comparación con
+            <code>==</code>/<code>!=</code>.
+          </p>
+        </section>
+
+        <!-- 10 -->
+        <section id="imports">
+          <h2><span class="sec-num">10</span> Imports y módulos</h2>
+          <p>Un módulo es un archivo <code>.ro</code> compilado en la misma unidad:</p>
+          <pre><code data-lang="rivo">import matematicas
+import matematicas as math
+from matematicas import absoluto
+
+fn main():
+    print(math.pi())
+    print(absoluto(-4))
+</code></pre>
+
+          <p>Combinando módulos, el programa sigue leyéndose en español:</p>
+          <pre><code data-lang="rivo">import texto
+from matematicas import absoluto
+
+fn main():
+    var saludo:string = "  hola rivo  "
+    print(texto.limpiar(saludo))
+    print(absoluto(-7))
+    print(texto.mayusculas("limpio"))
+</code></pre>
+          <ul class="clean">
+            <li><code>from modulo import funcion</code> permite llamar <code>funcion(...)</code>.</li>
+            <li><code>import modulo as alias</code> permite llamar <code>alias.funcion(...)</code>.</li>
+            <li>Los imports solo se permiten a nivel global, nunca dentro de funciones o bloques.</li>
+            <li>Solo se pueden usar funciones públicas; los imports circulares y los nombres duplicados son errores.</li>
+          </ul>
+
+          <h3>Búsqueda de módulos</h3>
+          <p>Para un módulo <code>matematicas</code>, el compilador busca <code>matematicas.ro</code> en este orden:</p>
+          <ol class="clean">
+            <li>El directorio del archivo principal.</li>
+            <li>Los directorios indicados con <code>-I</code>, en el orden de la CLI.</li>
+            <li>El directorio indicado por <code>RIVO_LIB</code>, si está definido.</li>
+            <li>La biblioteca estándar que acompaña al compilador.</li>
+          </ol>
+          <pre><code>./build/rivo programa.ro -I ./modulos</code></pre>
+        </section>
+
+        <!-- 11 -->
+        <section id="builtins">
+          <h2><span class="sec-num">11</span> Funciones incorporadas</h2>
+          <p>
+            Estas funciones existen sin importar nada. Las firmas las comparten el
+            análisis semántico y el codegen.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Categoría</th><th>Funciones</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Consola</td>
+                  <td><code>print</code>, <code>input</code>, <code>clear</code>, <code>move</code>, <code>sleep_ms</code>, <code>read_key</code></td>
+                </tr>
+                <tr>
+                  <td>Texto</td>
+                  <td><code>concat</code>, <code>split</code>, <code>join</code>, <code>upper</code>, <code>lower</code>, <code>trim</code>, <code>substring</code>, <code>replace</code>, <code>contains</code>, <code>starts_with</code>, <code>ends_with</code>, <code>find</code>, <code>len</code></td>
+                </tr>
+                <tr>
+                  <td>Conversión</td>
+                  <td><code>str</code>, <code>ord</code>, <code>chr</code>, <code>to_int</code>, <code>to_float</code>, <code>bin</code>, <code>oct</code>, <code>hex</code>, <code>round</code>, <code>pow</code>, <code>abs</code></td>
+                </tr>
+                <tr>
+                  <td>Aleatoriedad y tiempo</td>
+                  <td><code>random</code>, <code>random_float</code>, <code>seed</code>, <code>time_ms</code>, <code>epoch_ms</code></td>
+                </tr>
+                <tr>
+                  <td>Listas</td>
+                  <td><code>range</code>, <code>divmod</code>, <code>sorted</code>, <code>reversed</code>, <code>all</code>, <code>any</code></td>
+                </tr>
+                <tr>
+                  <td>Ficheros</td>
+                  <td><code>read_file</code>, <code>write_file</code>, <code>file_exists</code></td>
+                </tr>
+              </tbody>
+          </table>
+          </div>
+
+          <p>Un programa cotidiano con builtins de texto, listas y conversión:</p>
+          <pre><code data-lang="rivo">fn main():
+    var datos:string = "ana,luis,roi"
+    var partes:list&lt;string&gt; = split(datos, ",")
+
+    for p in partes:
+        print("- " + upper(p))
+
+    var edad:string = "42"
+    print(f"el año que viene tendrás {to_int(edad) + 1}")
+</code></pre>
+
+          <div class="callout callout--warn">
+            <p>
+              <strong>Reglas comunes:</strong> los fallos de ejecución (fichero
+              inexistente, <code>random</code> con <code>min &gt; max</code>,
+              <code>substring</code> fuera de rango, índice o clave inexistente)
+              <strong>abortan el programa</strong> con exit distinto de cero, salvo
+              que estén dentro de un <code>try</code>. Los strings devueltos viven en
+              la arena del runtime y no se liberan.
+            </p>
+          </div>
+        </section>
+
+        <!-- 12 -->
+        <section id="stdlib">
+          <h2><span class="sec-num">12</span> Biblioteca estándar</h2>
+          <p>
+            Los módulos viven en <code>lib/</code> y usan nombres en español. El
+            espacio de nombres es plano: los nombres no pueden chocar entre
+            módulos ni con tu programa.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Módulo</th><th>Qué ofrece</th></tr></thead>
+              <tbody>
+                <tr><td><code>matematicas</code></td><td>Raíces, potencias, trigonometría, logaritmos, <code>pi</code>, <code>euler</code>, redondeos, factorial, MCD/MCM, promedios y conversiones de temperatura.</td></tr>
+                <tr><td><code>texto</code></td><td>Mayúsculas, limpieza, partes, reemplazo, posición, trozos, repetición, conteo e inversión (envuelve los builtins).</td></tr>
+                <tr><td><code>tiempo</code></td><td><code>ahora_ms</code>, <code>epoca_ms</code>, <code>dormir</code> y conversiones.</td></tr>
+                <tr><td><code>aleatorio</code></td><td><code>semilla</code>, <code>entero</code>, <code>azar_float</code>, <code>probabilidad</code>.</td></tr>
+                <tr><td><code>ficheros</code></td><td><code>leer</code>, <code>escribir</code>, <code>existe</code>, <code>leer_lineas</code>, <code>escribir_lineas</code>, borrar, renombrar y directorios.</td></tr>
+                <tr><td><code>json</code></td><td><code>codificar</code>, <code>decodificar</code>, <code>escapar</code>, <code>desescapar</code> sobre maps planos de strings.</td></tr>
+                <tr><td><code>fecha</code></td><td>Fecha y hora actuales, épocas, suma y diferencia de días, bisiestos, día de la semana y nombres de mes (calendario gregoriano).</td></tr>
+                <tr><td><code>sistema</code></td><td>PID, directorio actual, host, SO, arquitectura, variables de entorno, usuario, procesadores y memoria.</td></tr>
+                <tr><td><code>estadistica</code></td><td>Suma, media, mediana, moda, varianza, desviación estándar y percentiles sobre <code>list&lt;float&gt;</code>.</td></tr>
+                <tr><td><code>validacion</code></td><td><code>numerico</code>, <code>no_vacio</code>, longitudes, <code>en_rango</code>, letras, alfanumérico y <code>es_email</code>.</td></tr>
+                <tr><td><code>csv</code></td><td><code>analizar</code>, <code>formatear</code>, comillas y columnas.</td></tr>
+                <tr><td><code>rutas</code></td><td><code>unir</code>, <code>nombre</code>, <code>directorio</code>, <code>extension</code>, componentes y normalización (solo texto).</td></tr>
+                <tr><td><code>color</code></td><td>Colores ANSI, negrita, subrayado, 256 colores y RGB verdadero para la terminal.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>La stdlib también se lee en español; aquí, media y desviación de un listado de notas:</p>
+          <pre><code data-lang="rivo">import estadistica
+
+fn main():
+    var notas:list&lt;float&gt; = [8.5, 6.0, 9.5]
+    print(estadistica.media(notas))
+    print(estadistica.desviacion_estandar(notas))
+</code></pre>
+        </section>
+
+        <!-- 13 -->
+        <section id="externas">
+          <h2><span class="sec-num">13</span> Funciones externas en C</h2>
+          <p>
+            La sentencia <code>external</code> declara una función implementada en
+            un fichero C que el compilador compila y enlaza contigo:
+          </p>
+          <pre><code data-lang="rivo">external "utilidades.c" fn doble_c(a:int) -> int
+
+fn main():
+    print(doble_c(21))
+</code></pre>
+
+          <p>Y el fichero <code>utilidades.c</code> que lo implementa (el compilador lo compila y enlaza por ti):</p>
+          <pre><code>/* utilidades.c */
+int doble_c(int a) {
+    return a * 2;
+}</code></pre>
+          <ul class="clean">
+            <li><code>external</code> no lleva cuerpo: es una declaración a nivel global.</li>
+            <li>Parámetros y retorno admitidos: <code>int</code>, <code>float</code>, <code>string</code>, <code>bool</code>, <code>char</code> (o sin retorno). No se pueden pasar listas ni maps por FFI.</li>
+            <li>La ruta del fichero C es relativa al fichero <code>.ro</code> que la declara, o absoluta.</li>
+            <li>Los strings que devuelva el código C deben ser estáticos: Rivo no los copia.</li>
+            <li>En Linux el enlace añade <code>-lm</code>.</li>
+          </ul>
+        </section>
+
+        <!-- 14 -->
+        <section id="errores">
+          <h2><span class="sec-num">14</span> Errores y diagnósticos</h2>
+          <p>
+            Rivo distingue errores de compilación (léxicos, sintácticos,
+            semánticos y de codegen) de los errores de ejecución, que el runtime
+            aborta o captura en un <code>catch</code>.
+          </p>
+          <p>Cada error se imprime bajo una clase conocida de Python:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Clase</th><th>Cuándo</th></tr></thead>
+              <tbody>
+                <tr><td><code>SyntaxError</code></td><td>Léxico, sintaxis, <code>break</code>/<code>continue</code>/<code>return</code> fuera de sitio.</td></tr>
+                <tr><td><code>TypeError</code></td><td>Tipos, argumentos, retorno, índices, asignación.</td></tr>
+                <tr><td><code>NameError</code></td><td>Nombres no definidos o duplicados, funciones, no inicializadas.</td></tr>
+                <tr><td><code>ValueError</code></td><td>Asignación a constante; conversiones inválidas en runtime.</td></tr>
+                <tr><td><code>AttributeError</code></td><td>Acceso a miembros privados.</td></tr>
+                <tr><td><code>ImportError</code></td><td>Módulos e imports.</td></tr>
+                <tr><td><code>IndexError</code>, <code>KeyError</code></td><td>Runtime: índice de lista o clave de map.</td></tr>
+                <tr><td><code>FileNotFoundError</code>, <code>MemoryError</code>, <code>RuntimeError</code></td><td>Runtime: ficheros, memoria e iteración inválida.</td></tr>
+                <tr><td><code>SystemError</code></td><td>Codegen, internos y LLVM.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Un diagnóstico muestra archivo, línea, columna, código fuente, marcador <code>^</code>, detalle y sugerencia:</p>
+          <pre><code>NameError: funcion no encontrada
+  --> programa.ro:2:1
+   |
+ 2 | printt("x")
+   | ^^^^^^
+   |
+   = sugerencia: quizas quisiste decir 'print'</code></pre>
+
+          <p>Otro ejemplo, esta vez de tipos: el error apunta exactamente al valor que no encaja.</p>
+          <pre><code>TypeError: tipo incompatible en la asignacion
+  --> cuenta.ro:3:24
+   |
+ 3 |     var texto:string = 42
+   |                        ^^
+   |
+   = detalle: se esperaba string y se encontro int</code></pre>
+          <p>
+            Cuando stderr es una terminal (y no hay <code>NO_COLOR</code>), la
+            cabecera y los marcadores se emiten con colores ANSI. En fichero o
+            pipe: texto plano.
+          </p>
+        </section>
+
+        <!-- 15 -->
+        <section id="cli">
+          <h2><span class="sec-num">15</span> CLI del compilador</h2>
+          <p>El compilador se llama <code>rivo</code>:</p>
+          <pre><code>rivo programa.ro            # genera el ejecutable "programa"
+rivo programa.ro -o salida  # elige la salida</code></pre>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Opción</th><th>Efecto</th></tr></thead>
+              <tbody>
+                <tr><td><code>-o archivo</code></td><td>Nombre del ejecutable de salida.</td></tr>
+                <tr><td><code>-c</code></td><td>Solo genera el objeto.</td></tr>
+                <tr><td><code>-S</code></td><td>Solo genera ensamblador.</td></tr>
+                <tr><td><code>-emit-ir</code></td><td>Emite el LLVM IR.</td></tr>
+                <tr><td><code>-g</code></td><td>Información de depuración.</td></tr>
+                <tr><td><code>-O0</code> … <code>-O2</code></td><td>Nivel de optimización.</td></tr>
+                <tr><td><code>-I dir</code> / <code>-Idir</code></td><td>Directorios extra para buscar módulos (repetible).</td></tr>
+                <tr><td><code>-v</code>, <code>--verbose</code></td><td>Salida detallada y tiempos por fase.</td></tr>
+                <tr><td><code>--keep-object</code></td><td>Conserva el fichero objeto.</td></tr>
+                <tr><td><code>--run</code></td><td>Ejecuta el binario tras compilar (como <code>cargo run</code>).</td></tr>
+                <tr><td><code>--</code></td><td>Separa los argumentos para el programa (con <code>--run</code>).</td></tr>
+                <tr><td><code>--version</code>, <code>--help</code></td><td>Versión y ayuda.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Proyectos con <code>rivo.toml</code></h3>
+          <p>
+            Si el directorio (o uno superior) lleva un manifiesto
+            <code>rivo.toml</code>, el compilador lo detecta solo: declara el
+            nombre, la versión, la <code>entrada</code>, el <code>binario</code>,
+            las rutas de <code>[dependencias]</code> y las opciones por defecto
+            de <code>[compilador]</code>. Con manifiesto:
+          </p>
+          <ul class="checklist">
+            <li>Los artefactos van a <code>target/debug/</code> o
+              <code>target/release/</code>.</li>
+            <li>La compilación muestra un estado estilo Cargo con colores
+              (<code>Compilando … Finished …</code>), respetando
+              <code>NO_COLOR</code>.</li>
+            <li>Una caché por fecha evita recompilar si nada cambió
+              (<code>Finished debug (sin cambios)</code>).</li>
+            <li><code>rivo</code> sin argumentos usa la <code>entrada</code> del
+              manifiesto.</li>
+          </ul>
+          <pre><code>[proyecto]
+nombre = "miapp"
+version = "0.1.0"
+entrada = "src/main.ro"
+
+[dependencias]
+utilidades = "libs"
+
+[compilador]
+perfil = "release"</code></pre>
+        </section>
+
+        <!-- 16 -->
+        <section id="arquitectura">
+          <h2><span class="sec-num">16</span> Arquitectura del compilador</h2>
+          <p>El compilador sigue un pipeline lineal, escrito en C:</p>
+          <pre><code>código fuente
+    ↓
+lexer        → tokens (INDENT, DEDENT, NEWLINE…)
+    ↓
+parser       → AST
+    ↓
+análisis semántico  → tabla de símbolos, tipos, visibilidad
+    ↓
+LLVM IR      → verificación y optimización
+    ↓
+archivo objeto
+    ↓
+linker (clang)
+    ↓
+ejecutable</code></pre>
+          <p>
+            La regla del proyecto es inequívoca: el programa se valida
+            <strong>antes</strong> de generar código. La implementación LLVM se
+            adapta al diseño del lenguaje, nunca al revés.
+          </p>
+        </section>
+
+        <!-- 17 -->
+        <section id="estado">
+          <h2><span class="sec-num">17</span> Estado del proyecto</h2>
+          <div class="callout callout--warn">
+            <p>
+              <strong>Diseñado ≠ implementado.</strong> Rivo está en fase de
+              construcción del compilador. Que una característica aparezca en esta
+              guía significa que está diseñada; no garantiza que todas sus
+              combinaciones estén probadas.
+            </p>
+          </div>
+          <p>Comprobado con pruebas de extremo a extremo y del runtime:</p>
+          <ul class="checklist">
+            <li>Variables, constantes, funciones y visibilidad con <code>_</code>.</li>
+            <li><code>if</code>/<code>else</code>, <code>while</code>, <code>for</code>, <code>break</code> y <code>continue</code>.</li>
+            <li>Listas, maps, operadores y f-strings.</li>
+            <li>Imports, módulos y funciones externas en C.</li>
+            <li><code>try</code>/<code>catch</code> sobre los aborts de runtime.</li>
+            <li>Biblioteca estándar y funciones incorporadas.</li>
+            <li>Manifiesto <code>rivo.toml</code>: dependencias, entrada,
+              <code>target/</code> con perfiles y caché, y <code>--run</code>.</li>
+          </ul>
+          <p>Ejecuta las suites antes de depender de cualquier cambio:</p>
+          <pre><code>sh tests/run_tests.sh
+sh tests/runtime/run_tests.sh</code></pre>
+        </section>
+
+        <!-- 18 -->
+        <section id="referencia">
+          <h2><span class="sec-num">18</span> Referencia rápida</h2>
+          <pre><code data-lang="rivo">fn sumar(a:int, b:int) -> int:
+    return a + b
+
+fn main():
+    const LIMITE:int = 3
+    var contador:int = 0
+    while contador < LIMITE:
+        print(f"vuelta {contador}: {sumar(contador, 1)}")
+        contador += 1
+</code></pre>
+          <ul class="clean">
+            <li>Los bloques usan indentación y <code>:</code>; no usan llaves.</li>
+            <li>Declara tipos explícitamente: <code>var nombre:tipo = valor</code>.</li>
+            <li>Usa <code>==</code> para comparar y <code>=</code> para asignar.</li>
+            <li><code>if</code> admite <code>else</code> y <code>elif</code> encadenados.</li>
+            <li>Los bucles son <code>while</code> y <code>for</code>; <code>break</code> y <code>continue</code> requieren un bucle.</li>
+            <li>Los mapas y listas usan corchetes; <code>{}</code> solo aparece dentro de f-strings.</li>
+            <li>No se convierten tipos implícitamente.</li>
+            <li>Archivos <code>.ro</code> · binario <code>rivo</code> · backend LLVM.</li>
+          </ul>
+
+          <p>Una receta completa que junta funciones, listas, condicionales y f-strings:</p>
+          <pre><code data-lang="rivo">fn promedio(notas:list&lt;int&gt;) -> int:
+    var suma:int = 0
+    for n in notas:
+        suma += n
+    return suma / len(notas)
+
+fn main():
+    var nombre:string = "Ana"
+    var notas:list&lt;int&gt; = [8, 6, 9]
+    var nota:int = promedio(notas)
+
+    if nota >= 5:
+        print(f"{nombre}: aprobado con {nota}")
+    else:
+        print(f"{nombre}: suspenso")
+</code></pre>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Rivo · documentación oficial del proyecto</span>
+      <nav aria-label="Navegación del pie">
+        <a href="index.html">Inicio</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html">C++</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

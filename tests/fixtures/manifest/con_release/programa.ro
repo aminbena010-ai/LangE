@@ -1,0 +1,4 @@
+# Artefactos en target/release/ gracias a optimizar = "2".
+
+fn main():
+    print("build release")

@@ -1,0 +1,10 @@
+# Manifiesto con perfil release: el binario va a
+# target/release/ con -O2.
+
+[proyecto]
+nombre = "con_release"
+version = "1.0.0"
+entrada = "programa.ro"
+
+[compilador]
+optimizar = "2"

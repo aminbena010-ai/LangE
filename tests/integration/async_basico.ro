@@ -1,0 +1,17 @@
+async fn doble(n:int) -> int:
+    return n * 2
+
+async fn signo(n:int) -> int:
+    if n < 0:
+        return -1
+    return 1
+
+fn main():
+    var t:task<int> = doble(21)
+    print(await t)
+
+    var negativo:task<int> = signo(0 - 5)
+    print(await negativo)
+
+    var positivo:task<int> = signo(9)
+    print(await positivo)

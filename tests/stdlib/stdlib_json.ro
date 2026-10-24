@@ -1,0 +1,28 @@
+# Biblioteca estandar: json (lib/json.rivo), solo plano.
+
+import json
+
+fn main():
+    var m:map<string, string> = ["a": "1"]
+    var texto:string = json.encode(m)
+    print(texto)
+
+    var otra:map<string, string> = json.decode(texto)
+    print(len(otra))
+    print(otra["a"])
+
+    var vacia:map<string, string> = json.decode("{}")
+    print(len(vacia))
+    print(json.encode(vacia))
+
+    var con_coma:map<string, string> = ["k": "x,y"]
+    var t2:string = json.encode(con_coma)
+    print(t2)
+    var d2:map<string, string> = json.decode(t2)
+    print(d2["k"])
+
+    print(json.escape("a\"b"))
+    print(json.unescape("a\\\"b"))
+    print(json.unescape("uno\\ndos"))
+    print(json.unescape("barra\\\\fin"))
+    print(json.escape("tab\there"))

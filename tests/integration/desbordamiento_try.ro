@@ -1,0 +1,13 @@
+# OverflowError capturable con try/catch: la aritmética
+# comprobada usa rivo_fatal, que salta al catch activo.
+
+fn main():
+    var N:int = 4
+    try:
+        var i:int = 0
+        while i < 10:
+            N = N * N
+            i = i + 1
+    catch e:
+        print("capturado")
+        print(N)

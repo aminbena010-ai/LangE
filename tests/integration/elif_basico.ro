@@ -1,0 +1,11 @@
+fn main():
+    var edad:int = 15
+
+    if edad < 13:
+        print("nino")
+    elif edad < 18:
+        print("adolescente")
+    elif edad < 65:
+        print("adulto")
+    else:
+        print("mayor")

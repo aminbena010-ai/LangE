@@ -1,0 +1,51 @@
+# Pruebas de la biblioteca validacion.
+
+import validation
+
+fn main():
+    print(validation.numeric("123"))
+    print(validation.numeric("-123"))
+    print(validation.numeric("+7"))
+    print(validation.numeric(""))
+    print(validation.numeric("-"))
+    print(validation.numeric("12a"))
+    print(validation.numeric("1.5"))
+
+    print(validation.is_float("3.14"))
+    print(validation.is_float("-0.5"))
+    print(validation.is_float("5"))
+    print(validation.is_float("3."))
+    print(validation.is_float(".5"))
+    print(validation.is_float("3.14.15"))
+    print(validation.is_float(""))
+
+    print(validation.not_empty(""))
+    print(validation.not_empty("x"))
+
+    print(validation.min_length("hola", 4))
+    print(validation.min_length("hola", 5))
+
+    print(validation.max_length("hola", 4))
+    print(validation.max_length("hola", 3))
+
+    print(validation.in_range(5, 1, 10))
+    print(validation.in_range(0, 1, 10))
+    print(validation.in_range(10, 1, 10))
+
+    print(validation.letters("Hola"))
+    print(validation.letters("H0la"))
+    print(validation.letters(""))
+
+    print(validation.alphanumeric("abc123"))
+    print(validation.alphanumeric("abc 123"))
+    print(validation.alphanumeric(""))
+
+    print(validation.is_email("a@b.com"))
+    print(validation.is_email("user@dominio.org"))
+    print(validation.is_email("@b.com"))
+    print(validation.is_email("a@"))
+    print(validation.is_email("a@@b.com"))
+    print(validation.is_email("a b@c.com"))
+    print(validation.is_email("a@b"))
+    print(validation.is_email("a@.com"))
+    print(validation.is_email("a@b."))

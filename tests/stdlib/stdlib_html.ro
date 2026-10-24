@@ -1,0 +1,5 @@
+import html
+
+fn main():
+    print(html.escape("<a&\"'"))
+    print(html.unescape("&lt;a&gt;&amp;&quot;&#x27;") == "<a>&\"'")

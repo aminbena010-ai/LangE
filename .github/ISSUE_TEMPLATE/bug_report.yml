@@ -1,0 +1,44 @@
+name: Reporte de error
+description: Algo no compila, falla o produce resultados incorrectos
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportar. Incluye pasos mínimos y evita datos privados.
+  - type: input
+    id: version
+    attributes:
+      label: Versión de Rivo
+      description: Salida de `rivo --version`
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Plataforma
+      placeholder: Linux x86_64, macOS ARM64, Windows x64...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducir
+      placeholder: |
+        1. Crear hola.ro con ...
+        2. Ejecutar `rivo hola.ro --run`
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Resultado esperado
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Resultado actual
+      description: Copia el error completo del compilador.
+    validations:
+      required: true

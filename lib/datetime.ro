@@ -1,0 +1,33 @@
+# Biblioteca estandar: datetime.
+#
+# Fechas como texto ISO 8601 (AAAA-MM-DD). Las operaciones
+# de calendario reutilizan el modulo date existente.
+
+import date
+
+fn now() -> string:
+    return date.current_datetime()
+
+fn today() -> string:
+    return date.current_date()
+
+fn from_timestamp(segundos:int) -> string:
+    return date.epoch_to_date(segundos)
+
+fn timestamp(fecha:string) -> int:
+    return date.date_to_epoch(fecha)
+
+fn shift_date(fecha:string, dias:int) -> string:
+    return date.add_days(fecha, dias)
+
+fn days_between_dates(inicio:string, fin:string) -> int:
+    return date.days_between(inicio, fin)
+
+fn valid_date(fecha:string) -> bool:
+    return date.is_valid_date(fecha)
+
+fn leap_year(anio:int) -> bool:
+    return date.is_leap_year(anio)
+
+fn weekday(fecha:string) -> int:
+    return date.day_of_week(fecha)

@@ -1,0 +1,7 @@
+# Un texto que no es JSON plano debe abortar en ejecucion.
+
+import json
+
+fn main():
+    var m:map<string, string> = json.decode("esto no es json")
+    print(len(m))

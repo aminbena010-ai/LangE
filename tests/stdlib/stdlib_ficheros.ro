@@ -1,0 +1,33 @@
+# Biblioteca estandar: ficheros (lib/files.rivo).
+
+import files
+
+fn main():
+    var ruta:string = "/tmp/rivo_test_stdlib.txt"
+
+    print(files.write(ruta, "uno\ndos"))
+    print(files.exists(ruta))
+    print(files.file_size(ruta))
+    print(files.read(ruta))
+
+    var lineas:list<string> = files.read_lines(ruta)
+    print(len(lineas))
+    print(lineas[1])
+    print(files.write_lines(ruta, ["a", "b"]))
+    print(files.read(ruta))
+
+    print(files.exists("/tmp/rivo_no_existe_stdlib.txt"))
+    print(files.file_size("/tmp/rivo_no_existe_stdlib.txt"))
+    print(files.exists("/tmp"))
+
+    print(files.file_rename(ruta, ruta + ".copia"))
+    print(files.exists(ruta))
+    print(files.delete_file(ruta + ".copia"))
+    print(files.exists(ruta + ".copia"))
+
+    var directorio:string = "/tmp/rivo_test_stdlib_dir"
+    print(files.delete_file(directorio))
+    print(files.create_directory(directorio))
+    print(files.exists(directorio))
+    print(files.delete_file(directorio))
+    print(files.exists(directorio))

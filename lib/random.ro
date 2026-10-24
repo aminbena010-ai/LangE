@@ -1,0 +1,24 @@
+# Biblioteca estandar: aleatoriedad.
+#
+# Envuelve los generadores aleatorios del runtime. La semilla
+# automatica (distinta en cada arranque) la establece el propio
+# runtime en el primer uso, asi que no hace falta inicializar
+# nada. set_seed permite fijar una semilla para reproducir una
+# secuencia (util en tests).
+#
+# Uso:
+#     import random
+#     print(random.integer(1, 30))
+#     print(random.uniform())
+
+fn set_seed(valor:int):
+    seed(valor)
+
+fn integer(minimo:int, maximo:int) -> int:
+    return random(minimo, maximo)
+
+fn uniform() -> float:
+    return random_float()
+
+fn chance(p:float) -> bool:
+    return random_float() < p

@@ -1,0 +1,8 @@
+# Una función externa solo admite tipos escalares: sin
+# listas ni maps.
+
+external "../fixtures/demo.c" fn mala(valores:list<int>) -> int
+
+fn main():
+    var vacia:list<int> = []
+    print(mala(vacia))

@@ -1,0 +1,46 @@
+# Pruebas de la biblioteca rutas.
+
+import paths
+
+fn main():
+    print(paths.join("usr", "local"))
+    print(paths.join("usr/", "local"))
+    print(paths.join("/", "bin"))
+    print(paths.join("usr", "/bin"))
+    print(paths.join("a", ""))
+
+    print(paths.name("usr/local/bin/rivo"))
+    print(paths.name("/a/"))
+    print(paths.name("rivo"))
+
+    print(paths.directory("usr/local/bin"))
+    print(paths.directory("/usr/local"))
+    print(paths.directory("/rivo"))
+    print(paths.directory("rivo"))
+
+    print(paths.extension("doc.txt"))
+    print(paths.extension("a.tar.gz"))
+    print(paths.extension(".gitignore"))
+    print(paths.extension("sinpunto"))
+    print(paths.extension("a."))
+
+    print(paths.without_extension("doc.txt"))
+    print(paths.without_extension("sinpunto"))
+    print(paths.name_without_extension("usr/nota.md"))
+
+    print(paths.is_absolute("/x"))
+    print(paths.is_absolute("x"))
+
+    print(paths.normalize("a/b/../c"))
+    print(paths.normalize("/a//b/./c/"))
+    print(paths.normalize("/a/../../b"))
+    print(paths.normalize("a/../../b"))
+    print(paths.normalize(""))
+    print(paths.normalize("usr/.."))
+    print(paths.normalize("a/b"))
+
+    var partes:list<string> = paths.components("/a//b/c")
+    print(len(partes))
+    print(partes[0])
+    print(partes[1])
+    print(partes[2])

@@ -1,0 +1,6 @@
+# Un callback no puede ser el retorno de una función externa.
+
+external "../fixtures/callbacks.c" fn mal_retorno() -> callback<int> -> int
+
+fn main():
+    print("nunca")

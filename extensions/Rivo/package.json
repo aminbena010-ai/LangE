@@ -1,0 +1,182 @@
+{
+  "name": "rivo",
+  "displayName": "Rivo",
+  "description": "Soporte de Rivo (.ro): resaltado, autocompletado, navegación, diagnósticos, ejecución y formateo.",
+  "version": "2.0.0",
+  "publisher": "rivo-lang",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Snippets"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "rivo",
+        "aliases": [
+          "Rivo",
+          "rivo",
+          "E++"
+        ],
+        "extensions": [
+          ".ro"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./media/logo.png",
+          "dark": "./media/logo-dark.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "rivo",
+        "scopeName": "source.ro",
+        "path": "./syntaxes/rivo.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "rivo",
+        "path": "./snippets/rivo.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "rivo.run",
+        "title": "Ejecutar fichero",
+        "category": "Rivo",
+        "icon": "$(play)"
+      },
+      {
+        "command": "rivo.compile",
+        "title": "Compilar fichero",
+        "category": "Rivo",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "rivo.restartServer",
+        "title": "Reiniciar servidor de lenguaje",
+        "category": "Rivo",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "rivo.openSettings",
+        "title": "Abrir ajustes de Rivo",
+        "category": "Rivo",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "rivo.format",
+        "title": "Formatear fichero",
+        "category": "Rivo",
+        "icon": "$(symbol-key)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "rivo.run",
+          "when": "resourceLangId == rivo",
+          "group": "navigation@1"
+        },
+        {
+          "command": "rivo.compile",
+          "when": "resourceLangId == rivo",
+          "group": "navigation@2"
+        },
+        {
+          "command": "rivo.format",
+          "when": "resourceLangId == rivo",
+          "group": "navigation@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "rivo.run",
+          "when": "editorLangId == rivo"
+        },
+        {
+          "command": "rivo.compile",
+          "when": "editorLangId == rivo"
+        },
+        {
+          "command": "rivo.format",
+          "when": "editorLangId == rivo"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "rivo.run",
+        "key": "ctrl+f5",
+        "when": "editorLangId == rivo"
+      }
+    ],
+    "configuration": {
+      "title": "Rivo",
+      "properties": {
+        "rivo.compilerPath": {
+          "type": "string",
+          "default": "rivo",
+          "description": "Ruta al binario del compilador rivo ('rivo' del PATH por defecto)."
+        },
+        "rivo.buildDir": {
+          "type": "string",
+          "default": ".rivo",
+          "description": "Carpeta (relativa a la raíz del workspace) para binarios y objetos: nunca se escribe junto a los .ro."
+        },
+        "rivo.manageGitignore": {
+          "type": "boolean",
+          "default": true,
+          "description": "Añadir la carpeta de build al .gitignore cuando el proyecto usa git."
+        },
+        "rivo.diagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Errores del compilador en vivo en el panel Problems (compilan en un directorio temporal, sin dejar .o)."
+        },
+        "rivo.semanticTokens": {
+          "type": "boolean",
+          "default": true,
+          "description": "Resaltado semántico de variables, parámetros y funciones con los colores de tu tema."
+        }
+      }
+    },
+    "semanticTokenScopes": [
+      {
+        "language": "rivo",
+        "scopes": {
+          "namespace": [
+            "support.class"
+          ],
+          "type": [
+            "entity.name.type",
+            "support.class"
+          ],
+          "function": [
+            "entity.name.function"
+          ],
+          "parameter": [
+            "variable.parameter"
+          ],
+          "variable": [
+            "variable.other.readwrite"
+          ],
+          "property": [
+            "variable.other.property"
+          ]
+        }
+      }
+    ]
+  },
+  "activationEvents": [
+    "onLanguage:rivo"
+  ],
+  "main": "./extension.js"
+}

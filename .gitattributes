@@ -1,0 +1,19 @@
+* text=auto eol=lf
+
+*.c   text diff=c
+*.h   text diff=c
+*.ro  text
+*.md  text
+*.txt text
+*.toml text
+*.sh  text eol=lf
+*.ps1 text eol=crlf
+
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.ico  binary
+*.vsix binary
+*.a    binary
+*.o    binary
+*.bin  binary

@@ -1,0 +1,22 @@
+# Biblioteca estandar: tiempo y aleatoriedad.
+
+import time
+import random
+
+fn main():
+    random.set_seed(7)
+
+    var entero:int = random.integer(1, 6)
+    print(entero >= 1 and entero <= 6)
+
+    var d:float = random.uniform()
+    print(d >= 0.0 and d < 1.0)
+
+    print(random.chance(1.0))
+    print(random.chance(-1.0))
+
+    print(time.ms_to_seconds(5000))
+
+    var inicio:int = time.now_ms()
+    print(inicio >= 0)
+    print(time.unix_ms() > 1600000000000)

@@ -1,0 +1,17 @@
+async fn doble(n:int) -> int:
+    return n * 2
+
+async fn doble_mas_uno(n:int) -> int:
+    var t:task<int> = doble(n)
+    return await t + 1
+
+async fn saluda():
+    print("hola async")
+
+fn main():
+    var t:task<int> = doble_mas_uno(10)
+    print(await t)
+
+    print(await doble(3) + 100)
+
+    await saluda()

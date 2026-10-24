@@ -1,0 +1,127 @@
+# Biblioteca estandar: csv.
+#
+# Analiza y formatea texto separado por comas con aspas
+# opcionales ("comillas dobles"). El campo entre comillas
+# puede contener comas, saltos de linea y comillas escapadas
+# como "" (dos aspas).
+#
+# Uso:
+#     import csv
+#     var filas:list<list<string>> = csv.parse("a,b\n1,2")
+#     print(csv.format(filas))
+
+import text
+
+fn _encode_field(campo:string) -> string:
+
+    if _needs_quotes(campo):
+        return quote(campo)
+
+    return campo
+
+fn _needs_quotes(campo:string) -> bool:
+
+    if find(campo, ",") >= 0:
+        return true
+
+    if find(campo, "\"") >= 0:
+        return true
+
+    if find(campo, "\n") >= 0:
+        return true
+
+    if find(campo, "\r") >= 0:
+        return true
+
+    return false
+
+fn quote(campo:string) -> string:
+    return "\"" + text.substitute(campo, "\"", "\"\"") + "\""
+
+fn unquote(campo:string) -> string:
+
+    if len(campo) >= 2 and text.has_prefix(campo, "\"") and text.has_suffix(campo, "\""):
+        return text.substitute(substring(campo, 1, len(campo) - 2), "\"\"", "\"")
+
+    return campo
+
+fn parse(texto_csv:string) -> list<list<string>>:
+    var filas:list<list<string>> = []
+    var fila:list<string> = []
+    var campo:string = ""
+    var entre_comillas:bool = false
+    var n:int = len(texto_csv)
+    var i:int = 0
+
+    while i < n:
+
+        var c:string = substring(texto_csv, i, 1)
+
+        if c == "\r" and substring(texto_csv, i + 1, 1) == "\n":
+            c = "\n"
+            i = i + 1
+
+        if entre_comillas:
+
+            if c == "\"":
+
+                if substring(texto_csv, i + 1, 1) == "\"":
+                    campo = campo + "\""
+                    i = i + 1
+                else:
+                    entre_comillas = false
+            else:
+                campo = campo + c
+        else:
+
+            if c == "\"":
+                entre_comillas = true
+            else:
+
+                if c == "\n":
+                    fila.add(campo)
+                    filas.add(fila)
+                    fila = []
+                    campo = ""
+                else:
+
+                    if c == ",":
+                        fila.add(campo)
+                        campo = ""
+                    else:
+                        campo = campo + c
+
+        i = i + 1
+
+    if len(fila) > 0 or len(campo) > 0:
+        fila.add(campo)
+        filas.add(fila)
+
+    return filas
+
+fn row_to_string(fila:list<string>) -> string:
+    var campos:list<string> = []
+    var i:int = 0
+
+    while i < len(fila):
+        campos.add(_encode_field(fila[i]))
+        i = i + 1
+
+    return text.combine(campos, ",")
+
+fn format(filas:list<list<string>>) -> string:
+    var lineas:list<string> = []
+    var i:int = 0
+
+    while i < len(filas):
+        lineas.add(row_to_string(filas[i]))
+        i = i + 1
+
+    return text.combine(lineas, "\n")
+
+fn columns(filas:list<list<string>>) -> int:
+
+    if len(filas) == 0:
+        return 0
+
+    return len(filas[0])

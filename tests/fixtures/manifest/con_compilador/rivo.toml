@@ -1,0 +1,9 @@
+# Manifiesto con opciones por defecto del compilador.
+
+[proyecto]
+nombre = "con_compilador"
+version = "0.1.0"
+
+[compilador]
+optimizar = "2"
+depurar = "true"

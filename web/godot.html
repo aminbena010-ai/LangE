@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rivo y Godot — guía honesta</title>
+  <meta name="description" content="Qué comparten Rivo y GDScript, en qué se parecen la sintaxis de Godot y la de Rivo, y qué no existe todavía: no hay plugin oficial de Godot para Rivo.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      document.documentElement.classList.add("js");
+      try {
+        var t = localStorage.getItem("rivo-theme");
+        document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        Rivo <small>.ro</small>
+      </a>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Abrir el menú">☰</button>
+      <nav class="site-nav" id="site-nav" data-site-nav aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html" aria-current="page">Godot</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html">C++</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar el tema">☀</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Guía</span>
+          <h1>Rivo y Godot</h1>
+          <p class="lead">
+            GDScript y Rivo comparten la misma alma: indentación, tipado suave o
+            explícito y una sintaxis pensada para leerse. Pero son mundos
+            distintos: Godot es un motor de juegos con su propio ecosistema y Rivo
+            es un lenguaje de propósito general que compila a binarios nativos.
+          </p>
+        </div>
+
+        <div class="callout callout--warn">
+          <p>
+            <strong>Sin humo:</strong> hoy <strong>no existe un plugin oficial de
+            Godot para Rivo</strong>, ni una API de escenas, nodos o señales.
+            Rivo no se adjunta a un árbol de escenas. Esta guía explica qué se
+            parece y qué podrías hacer hoy, sin prometer integraciones que no hay.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Comparación</span>
+          <h2>GDScript y Rivo, en la práctica</h2>
+        </div>
+
+        <div class="grid grid--2">
+          <div>
+            <h3 class="mono">GDScript (Godot)</h3>
+            <pre><code>var puntos: int = 0
+
+func tomar_dano(danio: int) -> void:
+    puntos -= danio
+    if puntos &lt;= 0:
+        morir()
+    elif puntos &lt; 30:
+        avisar()
+    else:
+        pass
+
+func _ready() -> void:
+    tomar_dano(10)</code></pre>
+          </div>
+
+          <div>
+            <h3 class="mono">Rivo</h3>
+            <pre><code data-lang="rivo">fn tomar_dano(puntos:int, danio:int) -> int:
+    var restantes:int = puntos - danio
+    if restantes &lt;= 0:
+        print("murió")
+    else:
+        if restantes &lt; 30:
+            print("herido")
+        else:
+            pass
+    return restantes
+
+fn main():
+    var vida:int = 100
+    vida = tomar_dano(vida, 10)
+    print(vida)
+</code></pre>
+          </div>
+        </div>
+
+        <p class="text-muted">
+          Nota cómo GDScript admite inferencia (<code>var puntos = 0</code> es
+          válido) mientras que Rivo exige el tipo; el <code>elif</code> es
+          igual en ambos.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Equivalencias</span>
+          <h2>Tabla GDScript → Rivo</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table class="compare">
+            <thead>
+              <tr><th>GDScript</th><th>Rivo</th><th>Diferencia clave</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="from">func f(a: int) -> void:</td>
+                <td class="to">fn f(a:int):</td>
+                <td>En Rivo, sin <code>-&gt; tipo</code> la función no devuelve nada; no existe <code>void</code> como tipo.</td>
+              </tr>
+              <tr>
+                <td class="from">var x = 5</td>
+                <td class="to">var x:int = 5</td>
+                <td>Rivo no infiere tipos.</td>
+              </tr>
+              <tr>
+                <td class="from">const PI = 3.14</td>
+                <td class="to">const PI:float = 3.14</td>
+                <td>Las constantes también llevan tipo y no pueden reasignarse.</td>
+              </tr>
+              <tr>
+                <td class="from">elif</td>
+                <td class="to">elif</td>
+                <td>Idéntico; no existe <code>elseif</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">match valor:</td>
+                <td class="to">✗ no existe</td>
+                <td>Rivo solo tiene <code>if</code>/<code>else</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">Array[int]</td>
+                <td class="to">list&lt;int&gt;</td>
+                <td>Corchetes angulares vs. <code>list&lt;T&gt;</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">{"a": 1}</td>
+                <td class="to">map&lt;string, int&gt; = ["a": 1]</td>
+                <td>Los mapas de Rivo usan corchetes, no llaves.</td>
+              </tr>
+              <tr>
+                <td class="from">signal muerto</td>
+                <td class="to">✗ no existe</td>
+                <td>Rivo no tiene señales ni sistema de eventos.</td>
+              </tr>
+              <tr>
+                <td class="from">@onready var x = $Nodo</td>
+                <td class="to">✗ no existe</td>
+                <td>No hay escenas, nodos ni árbol de juego en Rivo.</td>
+              </tr>
+              <tr>
+                <td class="from">try / except:</td>
+                <td class="to">try / catch error:</td>
+                <td><code>error</code> es un <code>string</code> con el mensaje del fallo.</td>
+              </tr>
+              <tr>
+                <td class="from">preload("res://…")</td>
+                <td class="to">✗ no existe</td>
+                <td>Rivo no tiene recursos ni sistema de archivos virtual.</td>
+              </tr>
+              <tr>
+                <td class="from">pass</td>
+                <td class="to">pass</td>
+                <td>La sentencia vacía es idéntica.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Qué se parecen de verdad</span>
+          <h2>El mismo espíritu de diseño</h2>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card">
+            <span class="card-kicker">Indentación</span>
+            <h3>Bloques sin llaves</h3>
+            <p>
+              Tanto GDScript como Rivo delimitan los bloques con indentación y
+              dos puntos. El código se lee como pseudocódigo.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Tipos</span>
+            <h3>Anotaciones con <code>:</code></h3>
+            <p>
+              GDScript escribe <code>var x: int</code> y Rivo <code>var x:int</code>.
+              La diferencia: en Rivo la anotación es obligatoria y no hay inferencia.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Legibilidad</span>
+            <h3>Palabras clave en inglés, claridad primero</h3>
+            <p>
+              Ambos usan <code>if</code>, <code>else</code>, <code>while</code>,
+              <code>for</code>, <code>in</code>, <code>return</code>,
+              <code>break</code>, <code>continue</code> y <code>pass</code>.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Errores</span>
+            <h3>Fallos visibles</h3>
+            <p>
+              GDScript avisa en el editor y detiene la ejecución; Rivo aborta con
+              clases tipo <code>IndexError</code> o <code>KeyError</code>, o las
+              captura en <code>try</code>/<code>catch</code>.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Ejecución</span>
+            <h3>Intérprete vs. binario</h3>
+            <p>
+              Godot ejecuta GDScript dentro del motor. Rivo compila con LLVM a un
+              ejecutable nativo: no hay motor, no hay runtime de escenas.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Tipado</span>
+            <h3>Opcional vs. obligatorio</h3>
+            <p>
+              GDScript permite omitir tipos; Rivo los exige en cada
+              <code>var</code>, <code>const</code> y parámetro. La corrección se
+              traslada al momento de compilar.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Entonces, ¿qué uso?</span>
+          <h2>Para qué sirve cada uno hoy</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Si quieres…</th><th>Usa</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Hacer un juego con escenas, nodos, física o 2D/3D</td>
+                <td><strong>Godot + GDScript</strong> (o C#). Rivo no tiene motor.</td>
+              </tr>
+              <tr>
+                <td>Aprender programación con una sintaxis clara y tipada, en un binario nativo</td>
+                <td><strong>Rivo</strong>.</td>
+              </tr>
+              <tr>
+                <td>Escribir herramientas de línea de comandos o utilidades del sistema</td>
+                <td><strong>Rivo</strong> (ficheros, sistema, fechas, csv, json… en la stdlib).</td>
+              </tr>
+              <tr>
+                <td>Conectar lógica propia con C existente</td>
+                <td><strong>Rivo</strong> mediante <code>external</code>.</td>
+              </tr>
+              <tr>
+                <td>Scriptear un árbol de escenas en tiempo real</td>
+                <td><strong>GDScript</strong>. Hoy no hay puente oficial con Rivo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <p>
+            <strong>¿Y una integración futura?</strong> Rivo ya compila a binarios
+            nativos y puede exponer funciones a C (<code>external</code> y
+            <code>fn</code> sin retorno). Esa es la dirección natural si algún día
+            se quisiera un puente con motores externos, pero no hay nada
+            implementado ni aprobado: no lo des por hecho.
+          </p>
+        </div>
+
+        <p>
+          <a class="btn btn-primary" href="docs.html">Explorar la documentación</a>
+          <a class="btn btn-ghost" href="python.html">Ver también: Python → Rivo</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Rivo · guía de Godot y GDScript</span>
+      <nav aria-label="Navegación del pie">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html">C++</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

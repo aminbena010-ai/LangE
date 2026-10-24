@@ -1,0 +1,7 @@
+from math import sum
+
+fn sum(a:int) -> int:
+    return 1
+
+fn main():
+    print(1)

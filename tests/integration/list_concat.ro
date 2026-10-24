@@ -1,0 +1,27 @@
+# Correccion de fases: `list + list` es concatenacion (§13)
+# y `+=` sobre listas hace lo mismo; antes el codegen
+# confundia la lista con un string y devolvia una vacia.
+fn main():
+    var a:list<int> = [1, 2]
+    var b:list<int> = [3]
+    var c:list<int> = a + b
+
+    print(len(c))
+    print(c[0])
+    print(c[2])
+    print(len(a))
+
+    var d:list<int> = [4]
+    d += [5]
+    print(len(d))
+    print(d[1])
+
+    var x:list<float> = [1.5, 2.5]
+    var y:list<float> = x + [3.5]
+    print(len(y))
+    print(y[2])
+
+    var filas:list<list<string>> = [["a"], ["b", "c"]]
+    var todas:list<list<string>> = [["z"]] + filas
+    print(len(todas))
+    print(todas[2][1])

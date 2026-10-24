@@ -1,0 +1,13 @@
+# Privacidad dentro del mismo archivo (claude.md §5:
+# regla "por archivo", decisión 2026-10-08)
+
+fn _ayudante() -> string:
+    var _local:string = "interno"
+    return _local
+
+fn _tambien_privado() -> string:
+    return "privado"
+
+fn main():
+    print(_ayudante())
+    print(_tambien_privado())

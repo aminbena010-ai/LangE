@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rivo para programadores de Python</title>
+  <meta name="description" content="Guía de equivalencias entre Python y Rivo: sintaxis, tipos, colecciones, control de flujo, errores y las diferencias importantes que evitan sorpresas.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      document.documentElement.classList.add("js");
+      try {
+        var t = localStorage.getItem("rivo-theme");
+        document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        Rivo <small>.ro</small>
+      </a>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Abrir el menú">☰</button>
+      <nav class="site-nav" id="site-nav" data-site-nav aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="python.html" aria-current="page">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html">C++</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar el tema">☀</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Guía de trasvase</span>
+          <h1>Rivo para programadores de Python</h1>
+          <p class="lead">
+            Rivo bebe directamente de Python: indentación significativa, sintaxis
+            legible y f-strings. Si vienes de Python, te sentirás en casa en
+            minutos — pero hay diferencias reales que conviene conocer antes de
+            escribir la primera línea.
+          </p>
+          <p>
+            <a class="btn btn-ghost" href="docs.html">Ver la documentación completa</a>
+          </p>
+        </div>
+
+        <div class="callout">
+          <p>
+            <strong>La diferencia que lo cambia todo:</strong> Python es dinámico;
+            Rivo es estáticamente tipado y <em>obliga</em> a escribir el tipo en
+            cada declaración. No hay inferencia, no hay conversión implícita y no
+            hay variables globales.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Lado a lado</span>
+          <h2>El mismo programa en ambos lenguajes</h2>
+        </div>
+
+        <div class="grid grid--2">
+          <div>
+            <h3 class="mono">Python</h3>
+            <pre><code>def doble(numero: int) -&gt; int:
+    return numero * 2
+
+
+def main():
+    nombres = ["Ana", "Luis"]
+    edades = {"Ana": 20, "Luis": 25}
+
+    for nombre in nombres:
+        print(f"{nombre}: {edades[nombre]}")
+
+    if len(nombres) &gt; 1:
+        print("varios")
+    elif len(nombres) == 1:
+        print("uno")
+    else:
+        print("ninguno")
+
+
+main()</code></pre>
+          </div>
+
+          <div>
+            <h3 class="mono">Rivo</h3>
+            <pre><code data-lang="rivo">fn doble(numero:int) -> int:
+    return numero * 2
+
+fn main():
+    var nombres:list&lt;string&gt; = ["Ana", "Luis"]
+    var edades:map&lt;string, int&gt; = [
+        "Ana": 20,
+        "Luis": 25
+    ]
+
+    for nombre in nombres:
+        print(f"{nombre}: {edades[nombre]}")
+
+    if len(nombres) > 1:
+        print("varios")
+    else:
+        if len(nombres) == 1:
+            print("uno")
+        else:
+            print("ninguno")
+</code></pre>
+          </div>
+        </div>
+
+        <p class="text-muted">
+          Observa: <code>def</code> pasa a <code>fn</code>, los tipos son
+          obligatorios y el diccionario es un <code>map&lt;K, V&gt;</code> escrito
+          con corchetes. <code>elif</code> es igual que en Python.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Equivalencias</span>
+          <h2>Tabla de traducción</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table class="compare">
+            <thead>
+              <tr><th>Python</th><th>Rivo</th><th>Notas</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="from">def f(a):</td>
+                <td class="to">fn f(a:int):</td>
+                <td>El tipo del parámetro es obligatorio.</td>
+              </tr>
+              <tr>
+                <td class="from">def f() -> int:</td>
+                <td class="to">fn f() -> int:</td>
+                <td>La flecha de retorno es igual; sin ella, la función no devuelve nada.</td>
+              </tr>
+              <tr>
+                <td class="from">x = 5</td>
+                <td class="to">var x:int = 5</td>
+                <td>Sin inferencia. Para fijar un valor permanente: <code>const x:int = 5</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">None</td>
+                <td class="to">null</td>
+                <td><code>null</code> es un valor y tipo oficial; sus reglas de compatibilidad son propias de Rivo.</td>
+              </tr>
+              <tr>
+                <td class="from">True / False</td>
+                <td class="to">true / false</td>
+                <td>En minúsculas.</td>
+              </tr>
+              <tr>
+                <td class="from">elif</td>
+                <td class="to">elif</td>
+                <td>Idéntico; no existe <code>elseif</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">and / or / not</td>
+                <td class="to">and / or / not</td>
+                <td>Idénticos.</td>
+              </tr>
+              <tr>
+                <td class="from">"a" + "b"</td>
+                <td class="to">"a" + "b"</td>
+                <td>Igual; también existe <code>concat(a, b)</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">f"{a + b}"</td>
+                <td class="to">✗ no existe</td>
+                <td>Dentro de <code>{}</code> solo se admite una expresión primaria (identificador, llamada, índice, miembro), sin operadores.</td>
+              </tr>
+              <tr>
+                <td class="from">[1, 2, 3]</td>
+                <td class="to">var l:list&lt;int&gt; = [1, 2, 3]</td>
+                <td>La lista lleva tipo de elemento.</td>
+              </tr>
+              <tr>
+                <td class="from">{"a": 1}</td>
+                <td class="to">var m:map&lt;string, int&gt; = ["a": 1]</td>
+                <td>Los mapas usan corchetes; <code>{}</code> no se usa para datos.</td>
+              </tr>
+              <tr>
+                <td class="from">dict["a"]</td>
+                <td class="to">m["a"]</td>
+                <td>Una clave inexistente aborta el programa (capturable con <code>try</code>).</td>
+              </tr>
+              <tr>
+                <td class="from">for i in range(3):</td>
+                <td class="to">for i in range(0, 3):</td>
+                <td><code>range</code> en Rivo siempre lleva inicio y fin; el fin es exclusivo.</td>
+              </tr>
+              <tr>
+                <td class="from">try / except e:</td>
+                <td class="to">try / catch e:</td>
+                <td><code>e</code> es un <code>string</code> con el mensaje. No existe <code>raise</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">if __name__ == "__main__":</td>
+                <td class="to">fn main():</td>
+                <td>El punto de entrada es <code>main</code> en el archivo principal.</td>
+              </tr>
+              <tr>
+                <td class="from">import math</td>
+                <td class="to">import matematicas</td>
+                <td>La biblioteca estándar usa nombres en español; los builtins, en inglés.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Diferencias importantes</span>
+          <h2>Lo que Python hace y Rivo no</h2>
+          <p class="lead">
+            Rivo es deliberadamente pequeño. Estas ausencias son diseño, no deudas
+            pendientes.
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <article class="card">
+            <span class="card-kicker">Tipos</span>
+            <h3>Sin conversión implícita</h3>
+            <p>
+              <code>var d:float = 7 / 2</code> es un error de tipo: <code>7 / 2</code>
+              es <code>int</code> (división entera hacia cero). Escribe
+              <code>7.0 / 2</code>. En Python esto pasaría sin más.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Sintaxis</span>
+            <h3><code>elif</code> como en Python</h3>
+            <p>
+              Las ramas múltiples se encadenan con <code>if</code>,
+              <code>elif</code> y <code>else</code>. No existe
+              <code>elseif</code>.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Expresiones</span>
+            <h3>Sin comprensiones ni lambdas</h3>
+            <p>
+              No existen list comprehensions, generadores ni <code>lambda</code>.
+              Usa <code>for</code>, <code>while</code> y funciones con nombre.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Ámbito</span>
+            <h3>Sin variables globales</h3>
+            <p>
+              <code>var</code> y <code>const</code> se declaran dentro de
+              funciones (y módulos). A nivel global, el compilador lo rechaza.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Comparaciones</span>
+            <h3>Cadenas sin orden</h3>
+            <p>
+              <code>==</code> y <code>!=</code> comparan el contenido de las
+              cadenas como en Python, pero <code>&lt;</code> y <code>&gt;</code>
+              no están permitidos sobre cadenas, ni la igualdad sobre listas y maps.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Errores</span>
+            <h3>Fallos que abortan</h3>
+            <p>
+              Un índice fuera de rango o una clave inexistente terminan el
+              programa con <code>IndexError</code>/<code>KeyError</code>, como en
+              Python antiguo. La única red de seguridad es
+              <code>try</code>/<code>catch</code>.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout callout--danger">
+          <p>
+            <strong>Sin POO.</strong> El diseño actual de Rivo no incluye clases,
+            herencia, métodos ni métodos dunder. Si tu proyecto gira alrededor de
+            objetos, Rivo no es (todavía) tu lenguaje.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Traducción útil</span>
+          <h2>Del día a día de Python a Rivo</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table class="compare">
+            <thead>
+              <tr><th>Tarea</th><th>En Python</th><th>En Rivo</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Imprimir</td>
+                <td class="from">print("hola")</td>
+                <td class="to">print("hola")</td>
+              </tr>
+              <tr>
+                <td>Leer una línea</td>
+                <td class="from">input()</td>
+                <td class="to">input() → string</td>
+              </tr>
+              <tr>
+                <td>Leer un entero</td>
+                <td class="from">int(input())</td>
+                <td class="to">to_int(input())</td>
+              </tr>
+              <tr>
+                <td>Longitud</td>
+                <td class="from">len(x)</td>
+                <td class="to">len(x)</td>
+              </tr>
+              <tr>
+                <td>Añadir a lista</td>
+                <td class="from">lista.append(v)</td>
+                <td class="to">lista.add(v)</td>
+              </tr>
+              <tr>
+                <td>Mayúsculas</td>
+                <td class="from">s.upper()</td>
+                <td class="to">upper(s)</td>
+              </tr>
+              <tr>
+                <td>Dividir texto</td>
+                <td class="from">s.split(",")</td>
+                <td class="to">split(s, ",")</td>
+              </tr>
+              <tr>
+                <td>Leer fichero</td>
+                <td class="from">open(p).read()</td>
+                <td class="to">read_file(p)</td>
+              </tr>
+              <tr>
+                <td>Escribir fichero</td>
+                <td class="from">open(p, "w").write(t)</td>
+                <td class="to">write_file(p, t)</td>
+              </tr>
+              <tr>
+                <td>Ordenar lista</td>
+                <td class="from">sorted(l)</td>
+                <td class="to">sorted(l)</td>
+              </tr>
+              <tr>
+                <td>Dormir</td>
+                <td class="from">time.sleep(1)</td>
+                <td class="to">sleep_ms(1000)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <p>
+            <strong>Convención de nombres:</strong> los <em>builtins</em> del
+            runtime están en inglés (<code>print</code>, <code>split</code>,
+            <code>to_int</code>…), mientras que la biblioteca estándar está en
+            español (<code>matematicas</code>, <code>texto</code>,
+            <code>fecha</code>…). Ninguno de los dos espacios puede duplicar
+            nombres.
+          </p>
+        </div>
+
+        <p>
+          <a class="btn btn-primary" href="docs.html">Continuar con la documentación</a>
+          <a class="btn btn-ghost" href="godot.html">Ver también: Godot → Rivo</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Rivo · guía para programadores de Python</span>
+      <nav aria-label="Navegación del pie">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html">C++</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

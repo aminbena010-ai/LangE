@@ -1,0 +1,4 @@
+import saludo
+
+fn main():
+    print(saludo.mensaje())

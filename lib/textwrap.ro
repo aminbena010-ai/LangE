@@ -1,0 +1,139 @@
+# Biblioteca estandar: ajuste de texto.
+#
+# Ajusta texto a un ancho dado, lo rellena, lo sangra y
+# elimina la sangria comun. El ajuste es codicioso: cada
+# palabra entera cabe en la linea siempre que quepa.
+#
+# Uso:
+#     import textwrap
+#     print(textwrap.fill("hola mundo", 5))
+
+import text
+
+fn _leading_spaces(linea:string) -> int:
+    var i:int = 0
+    var n:int = len(linea)
+
+    while i < n and substring(linea, i, 1) == " ":
+        i = i + 1
+
+    return i
+
+fn _normalize(t:string) -> string:
+    var s:string = text.substitute(t, "\n", " ")
+    s = text.substitute(s, "\t", " ")
+    return text.collapse_spaces(text.strip(s))
+
+fn wrap(t:string, ancho:int) -> list<string>:
+    var lineas:list<string> = []
+    var normalizado:string = _normalize(t)
+
+    if len(normalizado) == 0:
+        return lineas
+
+    if ancho <= 0:
+        lineas.add(normalizado)
+        return lineas
+
+    var palabras:list<string> = split(normalizado, " ")
+    var actual:string = ""
+    var i:int = 0
+
+    while i < len(palabras):
+
+        var palabra:string = palabras[i]
+
+        if len(actual) == 0:
+            actual = palabra
+        else:
+
+            if len(actual) + 1 + len(palabra) <= ancho:
+                actual = actual + " " + palabra
+            else:
+                lineas.add(actual)
+                actual = palabra
+
+        i = i + 1
+
+    if len(actual) > 0:
+        lineas.add(actual)
+
+    return lineas
+
+fn fill(t:string, ancho:int) -> string:
+    return text.combine(wrap(t, ancho), "\n")
+
+fn indent(t:string, prefijo:string) -> string:
+    var lineas:list<string> = split(t, "\n")
+    var resultado:list<string> = []
+    var i:int = 0
+
+    while i < len(lineas):
+
+        if len(text.strip(lineas[i])) > 0:
+            resultado.add(prefijo + lineas[i])
+        else:
+            resultado.add(lineas[i])
+
+        i = i + 1
+
+    return text.combine(resultado, "\n")
+
+fn dedent(t:string) -> string:
+    var lineas:list<string> = split(t, "\n")
+    var minimo:int = -1
+    var i:int = 0
+
+    while i < len(lineas):
+
+        if len(text.strip(lineas[i])) > 0:
+
+            var espacios:int = _leading_spaces(lineas[i])
+
+            if minimo < 0 or espacios < minimo:
+                minimo = espacios
+
+        i = i + 1
+
+    if minimo <= 0:
+        return t
+
+    var resultado:list<string> = []
+    i = 0
+
+    while i < len(lineas):
+        resultado.add(substring(lineas[i], minimo, len(lineas[i]) - minimo))
+        i = i + 1
+
+    return text.combine(resultado, "\n")
+
+fn _last_space(t:string) -> int:
+    var i:int = len(t) - 1
+
+    while i >= 0:
+
+        if substring(t, i, 1) == " ":
+            return i
+
+        i = i - 1
+
+    return -1
+
+fn shorten(t:string, ancho:int, placeholder:string) -> string:
+    var normalizado:string = _normalize(t)
+
+    if len(normalizado) <= ancho:
+        return normalizado
+
+    var limite:int = ancho - len(placeholder)
+
+    if limite < 0:
+        limite = 0
+
+    var cortado:string = substring(normalizado, 0, limite)
+    var espacio:int = _last_space(cortado)
+
+    if espacio > 0:
+        cortado = substring(cortado, 0, espacio)
+
+    return text.strip(cortado) + placeholder

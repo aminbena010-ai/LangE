@@ -1,0 +1,258 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Rivo",
+  "scopeName": "source.ro",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#fstrings" },
+    { "include": "#strings" },
+    { "include": "#chars" },
+    { "include": "#numbers" },
+    { "include": "#import-statements" },
+    { "include": "#struct-definition" },
+    { "include": "#function-definition" },
+    { "include": "#keywords" },
+    { "include": "#types" },
+    { "include": "#constants" },
+    { "include": "#operators-word" },
+    { "include": "#function-call" },
+    { "include": "#module-access" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.ro",
+          "begin": "#!",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.comment.begin.ro" }
+          },
+          "end": "!#",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.comment.end.ro" }
+          }
+        },
+        {
+          "name": "comment.line.number-sign.ro",
+          "match": "#(?!\\!).*$",
+          "captures": {
+            "0": { "name": "punctuation.definition.comment.ro" }
+          }
+        }
+      ]
+    },
+    "fstrings": {
+      "name": "string.interpolated.ro",
+      "begin": "\\bf\"",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.ro" }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.ro" }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape.ro",
+          "match": "\\\\(n|r|t|0|\\\\|\"|')"
+        },
+        {
+          "begin": "\\{",
+          "beginCaptures": {
+            "0": { "name": "punctuation.section.interpolation.begin.ro" }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": { "name": "punctuation.section.interpolation.end.ro" }
+          },
+          "contentName": "meta.embedded.expression.ro",
+          "patterns": [{ "include": "source.ro" }]
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.ro",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.ro" }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.ro" }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape.ro",
+          "match": "\\\\(n|r|t|0|\\\\|\"|')"
+        }
+      ]
+    },
+    "chars": {
+      "name": "string.quoted.single.ro",
+      "begin": "'",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.ro" }
+      },
+      "end": "'",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.ro" }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape.ro",
+          "match": "\\\\(n|r|t|0|\\\\|\"|')"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.float.ro",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.ro",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "import-statements": {
+      "patterns": [
+        {
+          "name": "meta.import.ro",
+          "match": "^\\s*(import)\\s+([A-Za-z_]\\w*)",
+          "captures": {
+            "1": { "name": "keyword.control.import.ro" },
+            "2": { "name": "support.class.ro" }
+          }
+        },
+        {
+          "name": "meta.import.ro",
+          "match": "^\\s*(from)\\s+([A-Za-z_]\\w*)(\\s+)(import)\\b",
+          "captures": {
+            "1": { "name": "keyword.control.import.ro" },
+            "2": { "name": "support.class.ro" },
+            "3": { "name": "" },
+            "4": { "name": "keyword.control.import.ro" }
+          }
+        },
+        {
+          "name": "keyword.control.import.ro",
+          "match": "\\b(?:import|from)\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.ro",
+          "match": "\\b(?:if|elif|else|while|for|in|break|continue|return|pass|try|catch)\\b"
+        },
+        {
+          "name": "keyword.control.async.ro",
+          "match": "\\b(?:async|await)\\b"
+        },
+        {
+          "name": "storage.type.struct.ro",
+          "match": "\\bstruct\\b"
+        },
+        {
+          "name": "storage.modifier.ro",
+          "match": "\\b(?:var|const)\\b"
+        },
+        {
+          "name": "storage.type.function.ro",
+          "match": "\\bfn\\b"
+        },
+        {
+          "name": "keyword.other.ro",
+          "match": "\\b(?:as|external|owned|static)\\b"
+        }
+      ]
+    },
+    "struct-definition": {
+      "match": "\\b(struct)\\s+([A-Za-z_]\\w*)",
+      "captures": {
+        "1": { "name": "storage.type.struct.ro" },
+        "2": { "name": "entity.name.type.ro" }
+      }
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "storage.type.ro",
+          "match": "\\b(?:int|float|string|bool|char|void|list|map|task|opaque|buffer|i8|i16|i32|i64|u8|u16|u32|u64|size)\\b"
+        },
+        {
+          "name": "entity.name.type.ro",
+          "match": "\\b[A-Z][A-Za-z0-9_]*\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.ro",
+          "match": "\\b(?:true|false)\\b"
+        },
+        {
+          "name": "constant.language.null.ro",
+          "match": "\\bnull\\b"
+        }
+      ]
+    },
+    "operators-word": {
+      "name": "keyword.operator.logical.ro",
+      "match": "\\b(?:and|or|not)\\b"
+    },
+    "function-definition": {
+      "match": "\\b(?:(async)\\s+)?(fn)\\s+([A-Za-z_]\\w*)",
+      "captures": {
+        "1": { "name": "keyword.control.async.ro" },
+        "2": { "name": "storage.type.function.ro" },
+        "3": { "name": "entity.name.function.ro" }
+      }
+    },
+    "function-call": {
+      "match": "\\b([A-Za-z_]\\w*)\\s*(?=\\()",
+      "name": "entity.name.function.call.ro"
+    },
+    "module-access": {
+      "match": "\\b([A-Za-z_]\\w*)(?=\\.)",
+      "name": "support.class.ro"
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.assignment.ro",
+          "match": "(?:\\+=|-=|\\*=|/=|=(?!=))"
+        },
+        {
+          "name": "keyword.operator.comparison.ro",
+          "match": "(?:==|!=|>=|<=|>|<)"
+        },
+        {
+          "name": "keyword.operator.increment.ro",
+          "match": "(?:\\+\\+|--)"
+        },
+        {
+          "name": "keyword.operator.arithmetic.ro",
+          "match": "(?://|\\+|-|\\*|/|%)"
+        },
+        {
+          "name": "keyword.operator.type.ro",
+          "match": "->"
+        },
+        {
+          "name": "punctuation.separator.key-value.ro",
+          "match": "[:,]"
+        },
+        {
+          "name": "punctuation.accessor.ro",
+          "match": "\\."
+        }
+      ]
+    }
+  }
+}

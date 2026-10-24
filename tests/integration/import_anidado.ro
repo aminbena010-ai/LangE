@@ -1,0 +1,4 @@
+import doble
+
+fn main():
+    print(doble.cuadrado(5))

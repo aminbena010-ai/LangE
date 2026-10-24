@@ -1,0 +1,2 @@
+fn mensaje() -> string:
+    return "hola paquete"

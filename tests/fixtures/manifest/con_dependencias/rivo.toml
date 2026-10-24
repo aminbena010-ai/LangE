@@ -1,0 +1,9 @@
+# Manifiesto de prueba: dependencias declaradas aquí
+# se añaden a la búsqueda de módulos sin usar -I.
+
+[proyecto]
+nombre = "con_dependencias"
+version = "0.1.0"
+
+[dependencias]
+utilidades = "libs"

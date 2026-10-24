@@ -1,0 +1,5 @@
+fn sum(a:int, b:int) -> int:
+    return a + b
+
+fn _doble(n:int) -> int:
+    return n * 2

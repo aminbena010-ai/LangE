@@ -1,0 +1,21 @@
+fn main():
+    var edades:map<string, int> = ["Ana": 20]
+    edades["Luis"] = 25
+    edades["Ana"] = 21
+    print(len(edades))
+    print(edades["Ana"])
+    print(edades["Luis"])
+    for clave in edades:
+        print(clave)
+        print(edades[clave])
+
+    var larga:map<string, string> = {
+        "1": "uno",
+        "2": "dos",
+        "3": "tres",
+    }
+    print(len(larga))
+    print(larga["2"])
+
+    var vacia:map<string, int> = {}
+    print(len(vacia))

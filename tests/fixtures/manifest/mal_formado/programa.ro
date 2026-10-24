@@ -1,0 +1,4 @@
+# Programa válido: el error proviene del rivo.toml.
+
+fn main():
+    print("nunca se compila")

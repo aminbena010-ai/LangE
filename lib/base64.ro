@@ -1,0 +1,12 @@
+# Biblioteca estandar: base64.
+#
+# Codificacion y decodificacion Base64 sobre cadenas de bytes.
+# Reutiliza la implementacion compartida de codecs.
+
+import codecs
+
+fn encode(texto:string) -> string:
+    return codecs.base64_encode(texto)
+
+fn decode(texto:string) -> string:
+    return codecs.base64_decode(texto)

@@ -1,0 +1,5 @@
+external "../fixtures/variadic.c" fn log_externo(fmt:string, a:int, b:int) -> int
+
+fn main():
+    log_externo("hola %d %d\n", 1, 2)
+    print("done")

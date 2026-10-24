@@ -1,0 +1,6 @@
+struct Box:
+    var items:list<int>
+
+fn main():
+    var box:Box = Box([])
+    print(box)

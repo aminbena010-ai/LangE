@@ -1,0 +1,9 @@
+fn main():
+    var m:map<string, int> = ["a": 1, "b": 2, "c": 3]
+    print(m.len())
+
+    var v:map<string, int> = []
+    print(v.len())
+
+    m.remove("b")
+    print(m.len())

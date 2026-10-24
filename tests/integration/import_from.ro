@@ -1,0 +1,4 @@
+from math import sum
+
+fn main():
+    print(sum(2, 3))

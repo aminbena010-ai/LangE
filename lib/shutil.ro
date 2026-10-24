@@ -1,0 +1,21 @@
+# Biblioteca estandar: shutil.
+#
+# Operaciones de alto nivel sobre archivos de texto y rutas.
+# La copia conserva el contenido textual, no metadatos ni permisos.
+
+import files
+
+fn copy_text(source:string, destination:string) -> bool:
+    return files.write(destination, files.read(source))
+
+fn move_path(source:string, destination:string) -> bool:
+    return files.file_rename(source, destination)
+
+fn delete_path(path:string) -> bool:
+    return files.delete_file(path)
+
+fn make_directory(path:string) -> bool:
+    return files.create_directory(path)
+
+fn path_size(path:string) -> int:
+    return files.file_size(path)

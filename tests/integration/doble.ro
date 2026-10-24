@@ -1,0 +1,4 @@
+import math as m
+
+fn cuadrado(n:int) -> int:
+    return m.sum(n, n)

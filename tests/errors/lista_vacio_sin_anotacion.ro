@@ -1,0 +1,5 @@
+# Sin una anotación útil el literal vacío no se puede
+# tipar: se rechaza en la fase semántica.
+
+fn main():
+    var x:int = []

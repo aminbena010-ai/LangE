@@ -1,0 +1,31 @@
+# Biblioteca estandar: ficheros.
+#
+# Leer y escribir usan las funciones incorporadas (los
+# textos viven en la arena del runtime). Lo que no cubren
+# -tamaño, borrar, crear directorio, renombrar- viene de
+# lib/c/files.c.
+#
+# Uso:
+#     import files
+#     files.write("salida.txt", "hola\n")
+
+external "c/files.c" fn file_size(ruta:string) -> int
+external "c/files.c" fn file_exists(ruta:string) -> bool
+external "c/files.c" fn delete_file(ruta:string) -> bool
+external "c/files.c" fn create_directory(ruta:string) -> bool
+external "c/files.c" fn file_rename(origen:string, destino:string) -> bool
+
+fn read(ruta:string) -> string:
+    return read_file(ruta)
+
+fn write(ruta:string, contenido:string) -> bool:
+    return write_file(ruta, contenido)
+
+fn exists(ruta:string) -> bool:
+    return file_exists(ruta)
+
+fn read_lines(ruta:string) -> list<string>:
+    return split(read(ruta), "\n")
+
+fn write_lines(ruta:string, lineas:list<string>) -> bool:
+    return write(ruta, join(lineas, "\n"))

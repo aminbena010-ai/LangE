@@ -1,0 +1,6 @@
+import base64
+
+fn main():
+    var encoded:string = base64.encode("Rivo")
+    print(encoded)
+    print(base64.decode(encoded))

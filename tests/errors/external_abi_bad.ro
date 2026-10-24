@@ -1,0 +1,8 @@
+# La firma .ro declara suma(a:int, b:int) -> int pero el
+# .c la define con (int, int). La verificación ABI debe
+# fallar en compile-time con "conflicting types".
+
+external "../fixtures/abi_bad.c" fn suma(a:int, b:int) -> int
+
+fn main():
+    print(suma(1, 2))

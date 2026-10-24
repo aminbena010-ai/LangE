@@ -1,0 +1,14 @@
+hola
+
+fin
+Hola
+42
+-7
+19.99
+true
+false
+A
+Hola mundo
+Hola mundo!
+4
+0

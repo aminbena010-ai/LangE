@@ -1,0 +1,218 @@
+# Biblioteca estandar: mgl.
+#
+# Libreria de ventanas graficas para Linux (X11 + Xft) con
+# estilo Tk: widgets con IDs enteros y eventos por bombeo
+# (E++ no tiene callbacks ni punteros a funciones).
+#
+# Requisitos del sistema: libx11, libxft y fontconfig (con
+# sus headers de desarrollo). Enlace:
+#     rivo programa.ro -l X11 -l Xft -l fontconfig
+#
+# Uso:
+#     import mgl
+#
+#     fn main():
+#         var v:int = mgl.window("Hola", 320, 200)
+#         var b:int = mgl.button(v, "Pulsa", 20, 60, 120, 36)
+#
+#         while mgl.update():
+#             if mgl.event_type() == mgl.event_click():
+#                 if mgl.event_widget() == b:
+#                     print("clic")
+#
+# Ventana:
+#     window(titulo, ancho, alto)    crea y muestra la ventana
+#     title(ventana, titulo)         cambia el titulo
+#     geometry(ventana, ancho, alto) redimensiona la ventana
+#     resizable(ventana, w, h)       true: se puede redimensionar
+#     background(ventana, r, g, b)   color de fondo
+#     destroy(ventana) -> bool       cierra la ventana
+#     windows_open() -> int          ventanas abiertas
+#     font(nombre, tamano)           fuente global
+#
+# Widgets (devuelven el id, 0 si falla):
+#     label(ventana, texto, x, y)
+#     button(ventana, texto, x, y, ancho, alto)
+#     entry(ventana, x, y, ancho, alto, largo_max)
+#     checkbutton(ventana, texto, x, y)
+#     frame(ventana, x, y, ancho, alto)
+#
+# Metodos de widget:
+#     config(id, opcion, valor) -> bool
+#         "text"     texto del widget
+#         "fg"       color de texto,  "r,g,b"
+#         "bg"       color de fondo,  "r,g,b"
+#         "state"    "normal" | "disabled"
+#         "checked"  "true" | "false" (solo casillas)
+#     get(id) -> string       texto actual; "1"/"0" en casillas
+#     insert(id, texto)       anade texto al final
+#     delete(id, inicio, fin) borra [inicio, fin); fin < 0
+#                             borra hasta el final
+#
+# Eventos (event_type):
+#     event_none()      0  sin evento significativo
+#     event_click()     1  boton pulsado (event_widget)
+#     event_keypress()  2  tecla imprimible (event_text)
+#     event_return()    3  Intro en una entrada (event_widget)
+#     event_check()     4  casilla alterna (event_widget)
+#     event_close()     5  ventana cerrada por el usuario
+#
+# Limitaciones v1: texto de entrada ASCII, sin IME; titulos
+# ASCII; sin soporte Wayland nativo (usa XWayland).
+
+external "c/mgl.c" fn mgl_available() -> bool
+
+external "c/mgl.c" fn mgl_window(titulo:string, ancho:int, alto:int) -> int
+
+external "c/mgl.c" fn mgl_title(ventana:int, titulo:string)
+
+external "c/mgl.c" fn mgl_geometry(ventana:int, ancho:int, alto:int)
+
+external "c/mgl.c" fn mgl_resizable(ventana:int, ancho:int, alto:int)
+
+external "c/mgl.c" fn mgl_background(ventana:int, r:int, g:int, b:int)
+
+external "c/mgl.c" fn mgl_destroy(ventana:int) -> int
+
+external "c/mgl.c" fn mgl_open_windows() -> int
+
+external "c/mgl.c" fn mgl_label(ventana:int, texto:string, x:int, y:int) -> int
+
+external "c/mgl.c" fn mgl_button(ventana:int, texto:string, x:int, y:int, ancho:int, alto:int) -> int
+
+external "c/mgl.c" fn mgl_entry(ventana:int, x:int, y:int, ancho:int, alto:int, largo_max:int) -> int
+
+external "c/mgl.c" fn mgl_checkbutton(ventana:int, texto:string, x:int, y:int) -> int
+
+external "c/mgl.c" fn mgl_frame(ventana:int, x:int, y:int, ancho:int, alto:int) -> int
+
+external "c/mgl.c" fn mgl_config(id:int, opcion:string, valor:string) -> int
+
+external "c/mgl.c" fn mgl_get(id:int) -> string
+
+external "c/mgl.c" fn mgl_insert(id:int, texto:string)
+
+external "c/mgl.c" fn mgl_delete(id:int, inicio:int, fin:int)
+
+external "c/mgl.c" fn mgl_font(nombre:string, tamano:int)
+
+external "c/mgl.c" fn mgl_update() -> int
+
+external "c/mgl.c" fn mgl_wait() -> int
+
+external "c/mgl.c" fn mgl_event_type() -> int
+
+external "c/mgl.c" fn mgl_event_widget() -> int
+
+external "c/mgl.c" fn mgl_event_text() -> string
+
+external "c/mgl.c" fn mgl_event_key() -> int
+
+external "c/mgl.c" fn mgl_event_x() -> int
+
+external "c/mgl.c" fn mgl_event_y() -> int
+
+fn available() -> bool:
+    return mgl_available()
+
+fn window(titulo:string, ancho:int, alto:int) -> int:
+    return mgl_window(titulo, ancho, alto)
+
+fn title(ventana:int, titulo:string):
+    mgl_title(ventana, titulo)
+
+fn geometry(ventana:int, ancho:int, alto:int):
+    mgl_geometry(ventana, ancho, alto)
+
+fn resizable(ventana:int, ancho:bool, alto:bool):
+    var w:int = 0
+    var h:int = 0
+
+    if ancho:
+        w = 1
+
+    if alto:
+        h = 1
+
+    mgl_resizable(ventana, w, h)
+
+fn background(ventana:int, r:int, g:int, b:int):
+    mgl_background(ventana, r, g, b)
+
+fn destroy(ventana:int) -> bool:
+    return mgl_destroy(ventana) != 0
+
+fn windows_open() -> int:
+    return mgl_open_windows()
+
+fn label(ventana:int, texto:string, x:int, y:int) -> int:
+    return mgl_label(ventana, texto, x, y)
+
+fn button(ventana:int, texto:string, x:int, y:int, ancho:int, alto:int) -> int:
+    return mgl_button(ventana, texto, x, y, ancho, alto)
+
+fn entry(ventana:int, x:int, y:int, ancho:int, alto:int, largo_max:int) -> int:
+    return mgl_entry(ventana, x, y, ancho, alto, largo_max)
+
+fn checkbutton(ventana:int, texto:string, x:int, y:int) -> int:
+    return mgl_checkbutton(ventana, texto, x, y)
+
+fn frame(ventana:int, x:int, y:int, ancho:int, alto:int) -> int:
+    return mgl_frame(ventana, x, y, ancho, alto)
+
+fn config(id:int, opcion:string, valor:string) -> bool:
+    return mgl_config(id, opcion, valor) != 0
+
+fn get(id:int) -> string:
+    return mgl_get(id)
+
+fn insert(id:int, texto:string):
+    mgl_insert(id, texto)
+
+fn delete(id:int, inicio:int, fin:int):
+    mgl_delete(id, inicio, fin)
+
+fn font(nombre:string, tamano:int):
+    mgl_font(nombre, tamano)
+
+fn update() -> bool:
+    return mgl_update() > 0
+
+fn wait() -> bool:
+    return mgl_wait() > 0
+
+fn event_type() -> int:
+    return mgl_event_type()
+
+fn event_widget() -> int:
+    return mgl_event_widget()
+
+fn event_text() -> string:
+    return mgl_event_text()
+
+fn event_key() -> int:
+    return mgl_event_key()
+
+fn event_x() -> int:
+    return mgl_event_x()
+
+fn event_y() -> int:
+    return mgl_event_y()
+
+fn event_none() -> int:
+    return 0
+
+fn event_click() -> int:
+    return 1
+
+fn event_keypress() -> int:
+    return 2
+
+fn event_return() -> int:
+    return 3
+
+fn event_check() -> int:
+    return 4
+
+fn event_close() -> int:
+    return 5

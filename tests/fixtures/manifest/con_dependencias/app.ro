@@ -1,0 +1,10 @@
+# Compilar desde cualquier sitio:
+#     rivo tests/fixtures/manifest/con_dependencias/app.ro
+#
+# El modulo saludo_dep se resuelve con el rivo.toml de
+# este directorio, sin -I.
+
+import saludo_dep
+
+fn main():
+    print(saludo_dep.mensaje_desde_dep())

@@ -1,0 +1,6 @@
+# Los tipos FFI de ancho fijo no se pueden usar fuera de
+# firmas externas: error semántico.
+
+fn main():
+    var x:i8 = 5
+    print(x)

@@ -1,0 +1,5 @@
+# read_file de un fichero que no existe aborta en
+# ejecución (decisión de diseño 2026-10-06).
+
+fn main():
+    print(read_file("/tmp/rivo_nada_que_leer.txt"))

@@ -1,0 +1,697 @@
+# Biblioteca estandar: expresiones regulares.
+#
+# Motor de regex por backtracking escrito en E++ puro. Soporta:
+# literales, '.', '^', '$', clases '[...]' con rangos y negacion,
+# escapados \d \D \w \W \s \S \b \B \n \t \r, cuantificadores
+# * + ? {m} {m,} {m,n} (codiciosos, con '?' final para perezosos),
+# grupos '(' ')' con capturas, no capturativos '(?:' y alternacion '|'.
+#
+# El patron se compila a un pool de nodos homogeneo
+# (list<list<string>>) donde cada nodo referencia a sus hijos por
+# indice, y se empareja con backtracking recursivo.
+#
+# Uso:
+#     import re
+#     var m:list<string> = re.search("a(b)c", "xabc")
+#     print(m[0])   # "abc"
+#     print(m[1])   # "b"
+#     print(re.findall("[0-9]+", "a1 b22 c333"))
+
+import text
+
+fn _dig() -> string:
+    return "0123456789"
+
+fn _wor() -> string:
+    return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+
+fn _spa() -> string:
+    return " \t\n\r"
+
+fn _atoi(t:string) -> int:
+    var r:int = 0
+    var neg:bool = false
+    var i:int = 0
+
+    if len(t) > 0 and substring(t, 0, 1) == "-":
+        neg = true
+        i = 1
+
+    while i < len(t):
+        r = r * 10 + find(_dig(), substring(t, i, 1))
+        i = i + 1
+
+    if neg:
+        return -r
+
+    return r
+
+fn _itoa(v:int) -> string:
+
+    if v == 0:
+        return "0"
+
+    var neg:bool = false
+
+    if v < 0:
+        neg = true
+        v = -v
+
+    var d:string = ""
+
+    while v > 0:
+        d = substring(_dig(), v % 10, 1) + d
+        v = v / 10
+
+    if neg:
+        return "-" + d
+
+    return d
+
+fn _word_char(c:string) -> bool:
+    return find(_wor(), c) >= 0
+
+fn _peek(s:string, st:list<int>) -> string:
+
+    if st[0] >= len(s):
+        return ""
+
+    return substring(s, st[0], 1)
+
+fn _adv(st:list<int>):
+    st[0] = st[0] + 1
+
+fn _pint(s:string, st:list<int>) -> int:
+    var r:int = 0
+    var tiene:bool = false
+
+    while true:
+
+        var c:string = _peek(s, st)
+
+        if c == "" or find(_dig(), c) < 0:
+            break
+
+        r = r * 10 + find(_dig(), c)
+        tiene = true
+        _adv(st)
+
+    if not tiene:
+        return -1
+
+    return r
+
+fn _nuevo(nodos:list<list<string>>, campos:list<string>) -> int:
+    var idx:int = len(nodos)
+    nodos.add(campos)
+    return idx
+
+fn _parse_class(s:string, st:list<int>, nodos:list<list<string>>) -> int:
+    var neg:int = 0
+
+    if _peek(s, st) == "^":
+        neg = 1
+        _adv(st)
+
+    var conjunto:string = ""
+    var primero:bool = true
+
+    while true:
+
+        var c:string = _peek(s, st)
+
+        if c == "":
+            break
+
+        if c == "]" and not primero:
+            _adv(st)
+            break
+
+        primero = false
+
+        if c == "\\":
+            _adv(st)
+            var e:string = _peek(s, st)
+            _adv(st)
+
+            if e == "d":
+                conjunto = conjunto + _dig()
+            else:
+                if e == "w":
+                    conjunto = conjunto + _wor()
+                else:
+                    if e == "s":
+                        conjunto = conjunto + _spa()
+                    else:
+                        if e == "n":
+                            conjunto = conjunto + "\n"
+                        else:
+                            if e == "t":
+                                conjunto = conjunto + "\t"
+                            else:
+                                if e == "r":
+                                    conjunto = conjunto + "\r"
+                                else:
+                                    conjunto = conjunto + e
+        else:
+            _adv(st)
+
+            var sig:string = _peek(s, st)
+
+            if sig == "-" and st[0] + 1 < len(s) and substring(s, st[0] + 1, 1) != "]":
+
+                var finr:string = substring(s, st[0] + 1, 1)
+                st[0] = st[0] + 2
+
+                var oc:int = ord(c)
+                var fc:int = ord(finr)
+
+                if fc >= oc:
+
+                    var j:int = oc
+
+                    while j <= fc:
+                        conjunto = conjunto + chr(j)
+                        j = j + 1
+                else:
+                    conjunto = conjunto + c + "-" + finr
+            else:
+                conjunto = conjunto + c
+
+    return _nuevo(nodos, ["C", conjunto, _itoa(neg)])
+
+fn _parse_escape(s:string, st:list<int>, nodos:list<list<string>>) -> int:
+    var e:string = _peek(s, st)
+    _adv(st)
+
+    if e == "d":
+        return _nuevo(nodos, ["C", _dig(), "0"])
+
+    if e == "D":
+        return _nuevo(nodos, ["C", _dig(), "1"])
+
+    if e == "w":
+        return _nuevo(nodos, ["C", _wor(), "0"])
+
+    if e == "W":
+        return _nuevo(nodos, ["C", _wor(), "1"])
+
+    if e == "s":
+        return _nuevo(nodos, ["C", _spa(), "0"])
+
+    if e == "S":
+        return _nuevo(nodos, ["C", _spa(), "1"])
+
+    if e == "n":
+        return _nuevo(nodos, ["L", "\n"])
+
+    if e == "t":
+        return _nuevo(nodos, ["L", "\t"])
+
+    if e == "r":
+        return _nuevo(nodos, ["L", "\r"])
+
+    if e == "b":
+        return _nuevo(nodos, ["B"])
+
+    if e == "B":
+        return _nuevo(nodos, ["N"])
+
+    return _nuevo(nodos, ["L", e])
+
+fn _parse_atom(s:string, st:list<int>, nodos:list<list<string>>) -> int:
+    var c:string = _peek(s, st)
+    _adv(st)
+
+    if c == "(":
+
+        var capidx:int = -1
+
+        if _peek(s, st) == "?" and substring(s, st[0] + 1, 1) == ":":
+            st[0] = st[0] + 2
+        else:
+            capidx = st[1]
+            st[1] = st[1] + 1
+
+        var child:int = _parse_regex(s, st, nodos)
+
+        if _peek(s, st) == ")":
+            _adv(st)
+
+        return _nuevo(nodos, ["G", _itoa(capidx), _itoa(child)])
+
+    if c == ".":
+        return _nuevo(nodos, ["D"])
+
+    if c == "^":
+        return _nuevo(nodos, ["^"])
+
+    if c == "$":
+        return _nuevo(nodos, ["$"])
+
+    if c == "[":
+        return _parse_class(s, st, nodos)
+
+    if c == "\\":
+        return _parse_escape(s, st, nodos)
+
+    return _nuevo(nodos, ["L", c])
+
+fn _parse_term(s:string, st:list<int>, nodos:list<list<string>>) -> int:
+    var atom:int = _parse_atom(s, st, nodos)
+    var c:string = _peek(s, st)
+
+    if c == "*":
+        _adv(st)
+        atom = _nuevo(nodos, ["R", "0", "-1", _itoa(atom)])
+
+        if _peek(s, st) == "?":
+            _adv(st)
+    else:
+        if c == "+":
+            _adv(st)
+            atom = _nuevo(nodos, ["R", "1", "-1", _itoa(atom)])
+
+            if _peek(s, st) == "?":
+                _adv(st)
+        else:
+            if c == "?":
+                _adv(st)
+                atom = _nuevo(nodos, ["R", "0", "1", _itoa(atom)])
+
+                if _peek(s, st) == "?":
+                    _adv(st)
+            else:
+                if c == "{":
+
+                    var guardar:int = st[0]
+                    _adv(st)
+                    var mn:int = _pint(s, st)
+
+                    if mn >= 0:
+
+                        var mx:int = mn
+                        var ok:bool = false
+
+                        if _peek(s, st) == ",":
+                            _adv(st)
+
+                            if _peek(s, st) == "}":
+                                mx = -1
+                                ok = true
+                            else:
+                                mx = _pint(s, st)
+
+                                if mx >= mn:
+                                    ok = true
+
+                        if ok and _peek(s, st) == "}":
+                            _adv(st)
+                            atom = _nuevo(nodos, ["R", _itoa(mn), _itoa(mx), _itoa(atom)])
+
+                            if _peek(s, st) == "?":
+                                _adv(st)
+                        else:
+                            st[0] = guardar
+                    else:
+                        st[0] = guardar
+
+    return atom
+
+fn _parse_seq(s:string, st:list<int>, nodos:list<list<string>>) -> int:
+    var hijos:list<int> = []
+
+    while true:
+
+        var c:string = _peek(s, st)
+
+        if c == "" or c == "|" or c == ")":
+            break
+
+        hijos.add(_parse_term(s, st, nodos))
+
+    var campos:list<string> = ["S", _itoa(len(hijos))]
+    var i:int = 0
+
+    while i < len(hijos):
+        campos.add(_itoa(hijos[i]))
+        i = i + 1
+
+    return _nuevo(nodos, campos)
+
+fn _parse_regex(s:string, st:list<int>, nodos:list<list<string>>) -> int:
+    var izq:int = _parse_seq(s, st, nodos)
+
+    while _peek(s, st) == "|":
+        _adv(st)
+        var der:int = _parse_seq(s, st, nodos)
+        izq = _nuevo(nodos, ["A", _itoa(izq), _itoa(der)])
+
+    return izq
+
+fn _compile(pattern:string) -> list<list<string>>:
+    var nodos:list<list<string>> = []
+    nodos.add(["H", "0", "0"])
+    var st:list<int> = [0, 1]
+    var raiz:int = _parse_regex(pattern, st, nodos)
+    nodos[0][1] = _itoa(st[1] - 1)
+    nodos[0][2] = _itoa(raiz)
+    return nodos
+
+fn _boundary(text:string, ti:int) -> bool:
+    var antes:bool = false
+    var desp:bool = false
+
+    if ti > 0:
+        antes = _word_char(substring(text, ti - 1, 1))
+
+    if ti < len(text):
+        desp = _word_char(substring(text, ti, 1))
+
+    return antes != desp
+
+fn _mnode(nodos:list<list<string>>, idx:int, text:string, ti:int, caps:list<string>) -> int:
+    var node:list<string> = nodos[idx]
+    var t:string = node[0]
+
+    if t == "L":
+
+        if ti < len(text) and substring(text, ti, 1) == node[1]:
+            return ti + 1
+
+        return -1
+
+    if t == "D":
+
+        if ti < len(text):
+            return ti + 1
+
+        return -1
+
+    if t == "C":
+
+        if ti >= len(text):
+            return -1
+
+        var c:string = substring(text, ti, 1)
+        var dentro:bool = find(node[1], c) >= 0
+
+        if node[2] == "1":
+            dentro = not dentro
+
+        if dentro:
+            return ti + 1
+
+        return -1
+
+    if t == "^":
+
+        if ti == 0:
+            return ti
+
+        return -1
+
+    if t == "$":
+
+        if ti == len(text):
+            return ti
+
+        return -1
+
+    if t == "B":
+
+        if _boundary(text, ti):
+            return ti
+
+        return -1
+
+    if t == "N":
+
+        if not _boundary(text, ti):
+            return ti
+
+        return -1
+
+    if t == "G":
+
+        var capidx:int = _atoi(node[1])
+        var child:int = _atoi(node[2])
+        var fin:int = _mseq(nodos, child, text, ti, caps)
+
+        if fin >= 0 and capidx >= 0 and capidx < len(caps):
+            caps[capidx] = substring(text, ti, fin - ti)
+
+        return fin
+
+    if t == "S":
+        return _mseq(nodos, idx, text, ti, caps)
+
+    if t == "A":
+
+        var izq:int = _atoi(node[1])
+        var der:int = _atoi(node[2])
+        var r:int = _mnode(nodos, izq, text, ti, caps)
+
+        if r >= 0:
+            return r
+
+        return _mnode(nodos, der, text, ti, caps)
+
+    return -1
+
+fn _mseq(nodos:list<list<string>>, idx:int, text:string, ti:int, caps:list<string>) -> int:
+    var node:list<string> = nodos[idx]
+    var idxs:list<int> = []
+    var i:int = 2
+
+    while i < len(node):
+        idxs.add(_atoi(node[i]))
+        i = i + 1
+
+    return _ml(nodos, idxs, 0, text, ti, caps)
+
+fn _ml(nodos:list<list<string>>, idxs:list<int>, ii:int, text:string, ti:int, caps:list<string>) -> int:
+
+    if ii >= len(idxs):
+        return ti
+
+    var node:list<string> = nodos[idxs[ii]]
+
+    if node[0] == "R":
+
+        var inner:int = _atoi(node[3])
+        var mn:int = _atoi(node[1])
+        var mx:int = _atoi(node[2])
+        var pos_min:int = ti
+        var count:int = 0
+
+        while count < mn:
+            pos_min = _mnode(nodos, inner, text, pos_min, caps)
+
+            if pos_min < 0:
+                return -1
+
+            count = count + 1
+
+        var positions:list<int> = []
+        var posG:int = pos_min
+
+        while mx < 0 or count < mx:
+
+            var np:int = _mnode(nodos, inner, text, posG, caps)
+
+            if np < 0 or np == posG:
+                break
+
+            positions.add(np)
+            posG = np
+            count = count + 1
+
+        var r:int = _ml(nodos, idxs, ii + 1, text, posG, caps)
+
+        if r >= 0:
+            return r
+
+        var k:int = len(positions) - 1
+
+        while k >= 0:
+            r = _ml(nodos, idxs, ii + 1, text, positions[k], caps)
+
+            if r >= 0:
+                return r
+
+            k = k - 1
+
+        return _ml(nodos, idxs, ii + 1, text, pos_min, caps)
+    else:
+
+        var pos:int = _mnode(nodos, idxs[ii], text, ti, caps)
+
+        if pos < 0:
+            return -1
+
+        return _ml(nodos, idxs, ii + 1, text, pos, caps)
+
+    return -1
+
+fn _run(pattern:string, text:string, desde:int, anclado:bool) -> list<string>:
+    var nodos:list<list<string>> = _compile(pattern)
+    var ncap:int = _atoi(nodos[0][1])
+    var raiz:int = _atoi(nodos[0][2])
+    var pos:int = desde
+
+    while pos <= len(text):
+
+        var caps:list<string> = []
+        var i:int = 0
+
+        while i <= ncap:
+            caps.add("")
+            i = i + 1
+
+        var fin:int = _mnode(nodos, raiz, text, pos, caps)
+
+        if fin >= 0:
+            caps[0] = substring(text, pos, fin - pos)
+            return caps
+
+        if anclado:
+            break
+
+        pos = pos + 1
+
+    var vacio:list<string> = []
+    return vacio
+
+fn match(pattern:string, text:string) -> list<string>:
+    return _run(pattern, text, 0, true)
+
+fn search(pattern:string, text:string) -> list<string>:
+    return _run(pattern, text, 0, false)
+
+fn test(pattern:string, text:string) -> bool:
+    return len(search(pattern, text)) > 0
+
+fn findall(pattern:string, text:string) -> list<string>:
+    var nodos:list<list<string>> = _compile(pattern)
+    var ncap:int = _atoi(nodos[0][1])
+    var raiz:int = _atoi(nodos[0][2])
+    var resultados:list<string> = []
+    var pos:int = 0
+
+    while pos <= len(text):
+
+        var caps:list<string> = []
+        var i:int = 0
+
+        while i <= ncap:
+            caps.add("")
+            i = i + 1
+
+        var fin:int = _mnode(nodos, raiz, text, pos, caps)
+
+        if fin >= 0:
+            resultados.add(substring(text, pos, fin - pos))
+
+            if fin > pos:
+                pos = fin
+            else:
+                pos = pos + 1
+        else:
+            pos = pos + 1
+
+    return resultados
+
+fn _expand(rep:string, caps:list<string>) -> string:
+    var salida:string = ""
+    var i:int = 0
+    var n:int = len(rep)
+
+    while i < n:
+
+        var c:string = substring(rep, i, 1)
+
+        if c == "\\" and i + 1 < n:
+
+            var sig:string = substring(rep, i + 1, 1)
+            var dig:int = find(_dig(), sig)
+
+            if dig >= 0 and dig < len(caps):
+                salida = salida + caps[dig]
+            else:
+                salida = salida + sig
+
+            i = i + 2
+        else:
+            salida = salida + c
+            i = i + 1
+
+    return salida
+
+fn sub(pattern:string, rep:string, text:string) -> string:
+    var nodos:list<list<string>> = _compile(pattern)
+    var ncap:int = _atoi(nodos[0][1])
+    var raiz:int = _atoi(nodos[0][2])
+    var salida:string = ""
+    var pos:int = 0
+    var ultimo:int = 0
+
+    while pos <= len(text):
+
+        var caps:list<string> = []
+        var i:int = 0
+
+        while i <= ncap:
+            caps.add("")
+            i = i + 1
+
+        var fin:int = _mnode(nodos, raiz, text, pos, caps)
+
+        if fin >= 0:
+            caps[0] = substring(text, pos, fin - pos)
+            salida = salida + substring(text, ultimo, pos - ultimo)
+            salida = salida + _expand(rep, caps)
+            ultimo = fin
+
+            if fin == pos:
+                pos = pos + 1
+            else:
+                pos = fin
+        else:
+            pos = pos + 1
+
+    salida = salida + substring(text, ultimo, len(text) - ultimo)
+    return salida
+
+fn split(pattern:string, text:string) -> list<string>:
+    var nodos:list<list<string>> = _compile(pattern)
+    var ncap:int = _atoi(nodos[0][1])
+    var raiz:int = _atoi(nodos[0][2])
+    var trozos:list<string> = []
+    var pos:int = 0
+    var ultimo:int = 0
+
+    while pos <= len(text):
+
+        var caps:list<string> = []
+        var i:int = 0
+
+        while i <= ncap:
+            caps.add("")
+            i = i + 1
+
+        var fin:int = _mnode(nodos, raiz, text, pos, caps)
+
+        if fin >= 0:
+            trozos.add(substring(text, ultimo, pos - ultimo))
+            ultimo = fin
+
+            if fin == pos:
+                pos = pos + 1
+            else:
+                pos = fin
+        else:
+            pos = pos + 1
+
+    trozos.add(substring(text, ultimo, len(text) - ultimo))
+    return trozos

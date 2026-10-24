@@ -1,0 +1,12 @@
+# Desbordamiento de aritmetica entera (arreglo 2026-10-16).
+# N = N * N crece hasta superar int64 y debe abortar con
+# OverflowError en lugar de envolver a 0 y imprimir 0 para
+# siempre.
+
+fn main():
+    var N:int = 4
+    var i:int = 0
+    while i < 10:
+        N = N * N
+        print(N)
+        i = i + 1

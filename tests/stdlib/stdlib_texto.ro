@@ -1,0 +1,29 @@
+# Biblioteca estandar: texto (lib/text.rivo).
+
+import text
+
+fn main():
+    print(text.to_upper("hola E++"))
+    print(text.to_lower("HOLA E++"))
+    print(text.strip("  espacio  "))
+    print(text.is_empty("   "))
+    print(text.is_empty("x"))
+    print(text.repeat("ab", 3))
+    print(text.count("una otra otra otra", "otra"))
+    print(text.count("abc", ""))
+    print(text.capitalize("hola mundo"))
+    print(text.capitalize("e++"))
+    print(text.reverse("abcde"))
+    print(text.reverse(""))
+    print(text.collapse_spaces("a   b  c"))
+    print(text.index_of("programa", "gra"))
+    print(text.slice("abcdefgh", 3, 4))
+    print(text.substitute("tunel tunel", "tun", "TUN"))
+    print(text.includes("el archivo txt", "archivo"))
+    print(text.has_prefix("E++", "E+"))
+    print(text.has_suffix("E++", "++"))
+
+    var trozos:list<string> = text.parts("uno,dos,tres", ",")
+    print(len(trozos))
+    print(trozos[2])
+    print(text.combine(trozos, " "))

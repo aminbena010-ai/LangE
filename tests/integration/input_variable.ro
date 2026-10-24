@@ -1,0 +1,3 @@
+fn main():
+    var nombre:string = input()
+    print(nombre)

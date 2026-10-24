@@ -1,0 +1,4 @@
+fn main():
+    var l:list<int> = [1, 2]
+    l[9] = 7
+    print(len(l))

@@ -1,0 +1,5 @@
+import math
+import math
+
+fn main():
+    print(1)

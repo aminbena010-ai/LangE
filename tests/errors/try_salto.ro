@@ -1,0 +1,10 @@
+fn main():
+    var i:int = 0
+    while i < 0:
+        try:
+            i = i + 1
+            return
+            break
+            continue
+        catch error:
+            print(error)

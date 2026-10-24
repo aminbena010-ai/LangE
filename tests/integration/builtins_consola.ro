@@ -1,0 +1,13 @@
+# Consola (fase 2.1): clear, move, sleep_ms y read_key.
+#
+# clear() y move() escriben secuencias ANSI: en una terminal
+# se ven como acciones, en la salida del test aparecen como
+# códigos de escape.
+
+fn main():
+    clear()
+    move(3, 5)
+    print("listo")
+    sleep_ms(5)
+    var tecla:char = read_key()
+    print(tecla)

@@ -1,0 +1,4 @@
+# El comentario de varias lineas nunca se cierra: E1011.
+fn main():
+    #! comentario sin cerrar
+    print("hola")

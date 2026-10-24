@@ -1,0 +1,27 @@
+# Tipos FFI de ancho fijo (Fase 1): i8, i16, i32, u8,
+# u16, u32, u64, size y void explícito.
+
+external "../fixtures/widths.c" fn doble_i8(x:i8) -> i8
+external "../fixtures/widths.c" fn doble_i16(x:i16) -> i16
+external "../fixtures/widths.c" fn doble_i32(x:i32) -> i32
+external "../fixtures/widths.c" fn doble_u8(x:u8) -> u8
+external "../fixtures/widths.c" fn doble_u16(x:u16) -> u16
+external "../fixtures/widths.c" fn doble_u32(x:u32) -> u32
+external "../fixtures/widths.c" fn doble_u64(x:u64) -> u64
+external "../fixtures/widths.c" fn triple_size(x:size) -> size
+external "../fixtures/widths.c" fn sin_retorno(x:int) -> void
+external "../fixtures/widths.c" fn maximo_u8() -> u8
+external "../fixtures/widths.c" fn minimo_i8() -> i8
+
+fn main():
+    print(doble_i8(10))
+    print(doble_i16(1000))
+    print(doble_i32(100000))
+    print(doble_u8(100))
+    print(doble_u16(30000))
+    print(doble_u32(1000000))
+    print(doble_u64(1000000000))
+    print(triple_size(7))
+    sin_retorno(42)
+    print(maximo_u8())
+    print(minimo_i8())

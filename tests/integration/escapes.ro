@@ -1,0 +1,19 @@
+# Correccion de fases: los escapes del texto se resuelven
+# igual que en los literales de caracter (\n, \t, \", \\).
+
+fn main():
+    var t:string = "a\nb"
+    print(len(t))
+    print(t)
+    print(t == "a\nb")
+
+    var q:string = "\"hola\""
+    print(q)
+    print(len(q))
+
+    var barras:string = "uno\\dos"
+    print(barras)
+    print(len(barras))
+
+    var tabulado:string = "a\tb"
+    print(len(tabulado))

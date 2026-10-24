@@ -1,0 +1,18 @@
+#! Este fichero empieza con un comentario
+multi-linea en la linea 1 y se cierra aqui !#
+fn main():
+    var a:int = 1 #! comentario en una linea que
+    continua en la siguiente !#
+
+    #! bloque completo
+    varias lineas
+    de comentarios !#
+    var b:int = a + 2
+
+    var t:string = "#! no es comentario"
+    var u:string = "tampoco !# lo es"
+
+    print(a)
+    print(b)
+    print(t)
+    print(u)

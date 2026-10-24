@@ -1,0 +1,23 @@
+# Correccion de fases: un bloque puede empezar por lineas
+# en blanco o de comentario.
+
+fn calcula(n:int) -> int:
+    # Comentario al principio del bloque.
+
+    var total:int = 0
+    var i:int = 0
+
+    while i < n:
+        total = total + i
+        i = i + 1
+
+    return total
+
+fn main():
+    print(calcula(5))
+
+    if calcula(3) == 3:
+        # Otro bloque con comentario inicial.
+        print("si")
+    else:
+        print("no")

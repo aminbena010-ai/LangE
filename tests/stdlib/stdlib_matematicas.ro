@@ -1,0 +1,37 @@
+# Biblioteca estandar: matematicas (lib/math.rivo).
+
+import math
+
+fn main():
+    print(math.abs(-5))
+    print(math.abs(5))
+    print(math.abs_float(-2.5))
+    print(math.min(3, 7))
+    print(math.max(3, 7))
+    print(math.clamp(20, 0, 10))
+    print(math.clamp(-2, 0, 10))
+    print(math.is_even(4))
+    print(math.is_odd(7))
+    print(math.sign(-9))
+    print(math.integer_power(2, 10))
+    print(math.factorial(5))
+    print(math.gcd(12, 18))
+    print(math.lcm(4, 6))
+    print(math.average(2.0, 4.0))
+    print(math.celsius_to_fahrenheit(100.0))
+    print(math.fahrenheit_to_celsius(32.0))
+
+    print(math.square_root(9.0))
+    print(math.power(2.0, 8.0))
+    print(math.sine(0.0))
+    print(math.cosine(0.0))
+    print(math.tangent(0.0))
+    print(math.log_10(100.0))
+    print(math.exponential(0.0))
+    print(math.pi() > 3.14)
+    print(math.euler() > 2.71)
+    print(math.round_to_int(2.6))
+    print(math.floor_to_int(2.6))
+    print(math.ceil_to_int(2.1))
+    print(math.is_integer(3.0))
+    print(math.is_integer(3.5))

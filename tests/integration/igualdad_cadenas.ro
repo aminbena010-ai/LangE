@@ -1,0 +1,21 @@
+# Correccion de fases: la igualdad de cadenas compara el
+# texto, no la direccion de memoria.
+
+fn main():
+    var a:string = "hola" + " " + "mundo"
+    print(a == "hola mundo")
+    print(a != "otra cosa")
+
+    var b:string = a + ""
+    print(b == a)
+    print(a == b)
+
+    var partes:list<string> = split(a, " ")
+    var reconstruido:string = join(partes, " ")
+    print(reconstruido == a)
+
+    print("igual" == "igual")
+    print("uno" == "dos")
+
+    var leido:string = upper("hola")
+    print(leido == "HOLA")

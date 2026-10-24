@@ -1,0 +1,11 @@
+# Prueba del flag -I: el modulo saludo_dir_i vive en
+# tests/fixtures/modulos, no junto a este programa.
+#
+# Compilar con:
+#     rivo tests/integration/import_directorio_i.rivo \
+#         -I tests/fixtures/modulos
+
+import saludo_dir_i
+
+fn main():
+    print(saludo_dir_i.mensaje_desde_i())

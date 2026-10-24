@@ -1,0 +1,4 @@
+# Entrada declarada en rivo.toml (entrada = "src/main.ro").
+
+fn main():
+    print("hola desde el manifiesto")

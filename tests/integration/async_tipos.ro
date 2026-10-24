@@ -1,0 +1,34 @@
+async fn nombre() -> string:
+    return "Rivo"
+
+async fn mitad(n:int) -> float:
+    return n / 2.0
+
+async fn bandera() -> bool:
+    return true
+
+async fn lista() -> list<int>:
+    return [1, 2, 3]
+
+async fn mapa() -> map<string, int>:
+    var m:map<string, int> = {}
+    m["a"] = 7
+    return m
+
+fn main():
+    var texto:task<string> = nombre()
+    print(await texto)
+
+    var decimal:task<float> = mitad(5)
+    print(await decimal)
+
+    var logico:task<bool> = bandera()
+    print(await logico)
+
+    var numeros:task<list<int>> = lista()
+    var xs:list<int> = await numeros
+    print(xs.len())
+
+    var edades:task<map<string, int>> = mapa()
+    var m:map<string, int> = await edades
+    print(m["a"])

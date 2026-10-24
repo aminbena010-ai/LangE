@@ -1,0 +1,39 @@
+# Aritmetica float IEEE 754 (claude.md §53).
+# Sin rejilla decimal: precision double como en Python.
+# La muestra usa representacion corta con round-trip exacto.
+
+external "../fixtures/demo.c" fn suma_decimal() -> float
+
+fn main():
+    # Aritmetica binaria: 0.1 + 0.2 no es exactamente 0.3.
+    var a:float = 0.1
+    var b:float = 0.2
+    print(a + b)
+    print(a + b == 0.3)
+    print(0.3 - 0.1)
+    print(2.0 * 0.1)
+
+    # Magnitudes pequenas: no se truncan a la rejilla.
+    var tiny:float = 0.000000000000000001
+    print(tiny)
+    print(tiny + tiny)
+
+    # Muestra: minimo 1 decimal.
+    print(19.99)
+    print(3.0)
+    print(0.5)
+    print(-0.0)
+
+    # Operaciones.
+    print(7.0 / 2.0)
+    print(10.0 % 3.0)
+    var x:float = 2.5
+    print(-x)
+    print(1.0 / 3.0)
+
+    # str() y f-strings usan el mismo formato que print.
+    print(str(19.99))
+    print(f"v={x}")
+
+    # Frontera FFI: el retorno de C es double puro.
+    print(suma_decimal())

@@ -1,0 +1,7 @@
+fn main():
+    print(42)
+    print(19.99)
+    print(true)
+    print(false)
+    print('A')
+    print("texto")

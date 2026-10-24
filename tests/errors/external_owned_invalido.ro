@@ -1,0 +1,6 @@
+# owned solo es válido con retorno string.
+
+external "../fixtures/demo.c" fn mala_owned() -> int owned
+
+fn main():
+    print("nunca")

@@ -1,0 +1,102 @@
+# Biblioteca estandar: texto.
+#
+# Envuelve las funciones incorporadas con nombres en
+# espanol y añade las que se pueden resolver en E++.
+#
+# Uso:
+#     import text
+#     print(text.to_upper("hola"))
+
+fn to_upper(t:string) -> string:
+    return upper(t)
+
+fn to_lower(t:string) -> string:
+    return lower(t)
+
+fn strip(t:string) -> string:
+    return trim(t)
+
+fn parts(t:string, separador:string) -> list<string>:
+    return split(t, separador)
+
+fn combine(lista:list<string>, separador:string) -> string:
+    return join(lista, separador)
+
+fn substitute(t:string, viejo:string, nuevo:string) -> string:
+    return replace(t, viejo, nuevo)
+
+fn includes(t:string, fragmento:string) -> bool:
+    return contains(t, fragmento)
+
+fn has_prefix(t:string, prefijo:string) -> bool:
+    return starts_with(t, prefijo)
+
+fn has_suffix(t:string, sufijo:string) -> bool:
+    return ends_with(t, sufijo)
+
+fn index_of(t:string, fragmento:string) -> int:
+    return find(t, fragmento)
+
+fn slice(t:string, inicio:int, cantidad:int) -> string:
+    return substring(t, inicio, cantidad)
+
+fn is_empty(t:string) -> bool:
+    return trim(t) == ""
+
+fn repeat(t:string, veces:int) -> string:
+    var resultado:string = ""
+    var i:int = 0
+    while i < veces:
+        resultado = resultado + t
+        i = i + 1
+    return resultado
+
+fn count(t:string, fragmento:string) -> int:
+    if fragmento == "" or not contains(t, fragmento):
+        return 0
+
+    var total:int = 0
+    var resto:string = t
+    var largo:int = len(fragmento)
+    var posicion_actual:int = 0
+    var desde:int = 0
+
+    while contains(resto, fragmento):
+        posicion_actual = find(resto, fragmento)
+        desde = posicion_actual + largo
+        total = total + 1
+        resto = substring(resto, desde, len(resto) - desde)
+
+    return total
+
+fn capitalize(t:string) -> string:
+    if len(t) <= 1:
+        return to_upper(t)
+
+    return upper(substring(t, 0, 1)) + lower(substring(t, 1, len(t) - 1))
+
+fn reverse(t:string) -> string:
+    if len(t) == 0:
+        return t
+
+    var letras:list<string> = split(t, "")
+    var i:int = 0
+    var j:int = len(letras) - 1
+    var temporal:string = ""
+
+    while i < j:
+        temporal = letras[i]
+        letras[i] = letras[j]
+        letras[j] = temporal
+        i = i + 1
+        j = j - 1
+
+    return join(letras, "")
+
+fn collapse_spaces(t:string) -> string:
+    var resultado:string = t
+
+    while contains(resultado, "  "):
+        resultado = replace(resultado, "  ", " ")
+
+    return resultado

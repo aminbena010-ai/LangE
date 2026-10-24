@@ -1,0 +1,8 @@
+import calendar
+
+fn main():
+    print(calendar.leap_year(2024))
+    print(calendar.month_length(2024, 2))
+    print(calendar.month_label(1))
+    print(calendar.weekday_index("2024-01-01"))
+    print(calendar.weekday_label("2024-01-01"))

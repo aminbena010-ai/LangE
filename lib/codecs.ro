@@ -1,0 +1,226 @@
+# Biblioteca estandar: codecs.
+#
+# Codificaciones y decodificaciones de texto: base64, hexadecimal,
+# percent-encoding (URL) y rot13. Trabajan sobre los bytes de la
+# cadena (ord/chr), asi que asumen texto sin nulos intermedios.
+#
+# Uso:
+#     import codecs
+#     print(codecs.base64_encode("hola"))
+#     print(codecs.hex_encode("hola"))
+#     print(codecs.rot13("hola"))
+
+import text
+
+fn _base64_tabla() -> string:
+    return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+
+fn _hex_mayus() -> string:
+    return "0123456789ABCDEF"
+
+fn _hex_minus() -> string:
+    return "0123456789abcdef"
+
+fn base64_encode(t:string) -> string:
+    var tabla:string = _base64_tabla()
+    var n:int = len(t)
+    var salida:string = ""
+    var i:int = 0
+
+    while i < n:
+
+        var b0:int = ord(substring(t, i, 1))
+        var b1:int = 0
+        var b2:int = 0
+        var disponibles:int = 1
+
+        if i + 1 < n:
+            b1 = ord(substring(t, i + 1, 1))
+            disponibles = 2
+
+        if i + 2 < n:
+            b2 = ord(substring(t, i + 2, 1))
+            disponibles = 3
+
+        salida = salida + substring(tabla, b0 / 4, 1)
+        salida = salida + substring(tabla, (b0 % 4) * 16 + b1 / 16, 1)
+
+        if disponibles > 1:
+            salida = salida + substring(tabla, (b1 % 16) * 4 + b2 / 64, 1)
+        else:
+            salida = salida + "="
+
+        if disponibles > 2:
+            salida = salida + substring(tabla, b2 % 64, 1)
+        else:
+            salida = salida + "="
+
+        i = i + 3
+
+    return salida
+
+fn base64_decode(t:string) -> string:
+    var tabla:string = _base64_tabla()
+    var limpio:string = ""
+    var n:int = len(t)
+    var i:int = 0
+
+    while i < n:
+
+        var c:string = substring(t, i, 1)
+
+        if c != "=" and find(" \t\n\r", c) < 0:
+            limpio = limpio + c
+
+        i = i + 1
+
+    var salida:string = ""
+    var m:int = len(limpio)
+    i = 0
+
+    while i + 3 < m:
+
+        var v0:int = find(tabla, substring(limpio, i, 1))
+        var v1:int = find(tabla, substring(limpio, i + 1, 1))
+        var v2:int = find(tabla, substring(limpio, i + 2, 1))
+        var v3:int = find(tabla, substring(limpio, i + 3, 1))
+
+        salida = salida + chr(v0 * 4 + v1 / 16)
+        salida = salida + chr((v1 % 16) * 16 + v2 / 4)
+        salida = salida + chr((v2 % 4) * 64 + v3)
+
+        i = i + 4
+
+    var resto:int = m - i
+
+    if resto == 2:
+
+        var a:int = find(tabla, substring(limpio, i, 1))
+        var b:int = find(tabla, substring(limpio, i + 1, 1))
+        salida = salida + chr(a * 4 + b / 16)
+    else:
+
+        if resto == 3:
+
+            var a2:int = find(tabla, substring(limpio, i, 1))
+            var b2:int = find(tabla, substring(limpio, i + 1, 1))
+            var c2:int = find(tabla, substring(limpio, i + 2, 1))
+            salida = salida + chr(a2 * 4 + b2 / 16)
+            salida = salida + chr((b2 % 16) * 16 + c2 / 4)
+
+    return salida
+
+fn hex_encode(t:string) -> string:
+    var hex:string = _hex_mayus()
+    var salida:string = ""
+    var i:int = 0
+
+    while i < len(t):
+
+        var v:int = ord(substring(t, i, 1))
+        salida = salida + substring(hex, v / 16, 1) + substring(hex, v % 16, 1)
+        i = i + 1
+
+    return salida
+
+fn hex_decode(t:string) -> string:
+    var hex:string = _hex_minus()
+    var s:string = lower(trim(t))
+    var salida:string = ""
+    var i:int = 0
+    var n:int = len(s)
+
+    while i + 1 < n:
+
+        var hi:int = find(hex, substring(s, i, 1))
+        var lo:int = find(hex, substring(s, i + 1, 1))
+
+        if hi >= 0 and lo >= 0:
+
+            var v:int = hi * 16 + lo
+
+            if v >= 1:
+                salida = salida + chr(v)
+
+        i = i + 2
+
+    return salida
+
+fn url_quote(t:string) -> string:
+    var hex:string = _hex_mayus()
+    var seguros:string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~"
+    var salida:string = ""
+    var i:int = 0
+
+    while i < len(t):
+
+        var c:string = substring(t, i, 1)
+
+        if find(seguros, c) >= 0:
+            salida = salida + c
+        else:
+
+            var v:int = ord(c)
+            salida = salida + "%" + substring(hex, v / 16, 1) + substring(hex, v % 16, 1)
+
+        i = i + 1
+
+    return salida
+
+fn url_unquote(t:string) -> string:
+    var hex:string = _hex_minus()
+    var salida:string = ""
+    var i:int = 0
+    var n:int = len(t)
+
+    while i < n:
+
+        var c:string = substring(t, i, 1)
+
+        if c == "%" and i + 2 < n:
+
+            var hi:int = find(hex, lower(substring(t, i + 1, 1)))
+            var lo:int = find(hex, lower(substring(t, i + 2, 1)))
+
+            if hi >= 0 and lo >= 0:
+
+                var v:int = hi * 16 + lo
+
+                if v >= 1:
+                    salida = salida + chr(v)
+
+                i = i + 3
+            else:
+                salida = salida + c
+                i = i + 1
+        else:
+            salida = salida + c
+            i = i + 1
+
+    return salida
+
+fn rot13(t:string) -> string:
+    var bajo:string = "abcdefghijklmnopqrstuvwxyz"
+    var alto:string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    var salida:string = ""
+    var i:int = 0
+
+    while i < len(t):
+
+        var c:string = substring(t, i, 1)
+        var p:int = find(bajo, c)
+
+        if p >= 0:
+            salida = salida + substring(bajo, (p + 13) % 26, 1)
+        else:
+
+            p = find(alto, c)
+
+            if p >= 0:
+                salida = salida + substring(alto, (p + 13) % 26, 1)
+            else:
+                salida = salida + c
+
+        i = i + 1
+
+    return salida

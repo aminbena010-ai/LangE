@@ -1,0 +1,48 @@
+# Biblioteca estandar: pathlib.
+#
+# Utilidades funcionales de rutas. Rivo aun no tiene clases,
+# asi que Path devuelve la ruta normalizada como string.
+
+import paths
+
+fn Path(ruta:string) -> string:
+    return paths.normalize(ruta)
+
+fn join_path(first:string, second:string) -> string:
+    return paths.normalize(paths.join(first, second))
+
+fn file_name(ruta:string) -> string:
+    return paths.name(ruta)
+
+fn parent_directory(ruta:string) -> string:
+    return paths.directory(ruta)
+
+fn extension_of(ruta:string) -> string:
+    var extension:string = paths.extension(ruta)
+
+    if extension == "":
+        return ""
+
+    return "." + extension
+
+fn file_stem(ruta:string) -> string:
+    return paths.name_without_extension(ruta)
+
+fn extensions_of(ruta:string) -> list<string>:
+    var base:string = paths.name(ruta)
+    var partes:list<string> = split(base, ".")
+    var resultado:list<string> = []
+    var i:int = 1
+
+    while i < len(partes):
+        if partes[i] != "":
+            resultado.add("." + partes[i])
+        i = i + 1
+
+    return resultado
+
+fn path_is_absolute(ruta:string) -> bool:
+    return paths.is_absolute(ruta)
+
+fn path_parts(ruta:string) -> list<string>:
+    return paths.components(ruta)

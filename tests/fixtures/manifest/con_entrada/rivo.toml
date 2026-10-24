@@ -1,0 +1,7 @@
+# Manifiesto con archivo de entrada: permite compilar
+# sin escribir el nombre del .ro en la línea de comandos.
+
+[proyecto]
+nombre = "con_entrada"
+version = "0.2.0"
+entrada = "src/main.ro"

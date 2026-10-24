@@ -1,0 +1,191 @@
+# Biblioteca estandar: estadistica.
+#
+# Funciones sobre list<float>. Los listados vacios
+# devuelven 0.0 (o el primer valor, en su caso); la
+# varianza es de la poblacion (se divide entre n).
+#
+# Ordena siempre sobre una copia: en E++ las listas se
+# pasan por referencia y no se debe tocar la del llamante.
+#
+# Uso:
+#     import statistics
+#     print(statistics.mean([2.0, 4.0, 9.0]))
+
+import math
+
+fn _sort(valores:list<float>) -> list<float>:
+    var copia:list<float> = []
+
+    for x in valores:
+        copia.add(x)
+
+    var n:int = len(copia)
+    var i:int = 0
+
+    while i < n:
+
+        var j:int = 0
+
+        while j < n - 1 - i:
+
+            if copia[j] > copia[j + 1]:
+                var temporal:float = copia[j]
+                copia[j] = copia[j + 1]
+                copia[j + 1] = temporal
+
+            j = j + 1
+
+        i = i + 1
+
+    return copia
+
+fn sum(valores:list<float>) -> float:
+    var total:float = 0.0
+
+    for x in valores:
+        total = total + x
+
+    return total
+
+fn product(valores:list<float>) -> float:
+    var total:float = 1.0
+
+    for x in valores:
+        total = total * x
+
+    return total
+
+fn mean(valores:list<float>) -> float:
+    var n:int = len(valores)
+
+    if n == 0:
+        return 0.0
+
+    return sum(valores) / n
+
+fn min_list(valores:list<float>) -> float:
+    var n:int = len(valores)
+
+    if n == 0:
+        return 0.0
+
+    var menor:float = valores[0]
+
+    for x in valores:
+
+        if x < menor:
+            menor = x
+
+    return menor
+
+fn max_list(valores:list<float>) -> float:
+    var n:int = len(valores)
+
+    if n == 0:
+        return 0.0
+
+    var mayor:float = valores[0]
+
+    for x in valores:
+
+        if x > mayor:
+            mayor = x
+
+    return mayor
+
+fn range(valores:list<float>) -> float:
+    var n:int = len(valores)
+
+    if n == 0:
+        return 0.0
+
+    return max_list(valores) - min_list(valores)
+
+fn median(valores:list<float>) -> float:
+    var n:int = len(valores)
+
+    if n == 0:
+        return 0.0
+
+    var ordenados:list<float> = _sort(valores)
+
+    if n % 2 == 1:
+        return ordenados[n / 2]
+
+    var izquierda:int = n / 2 - 1
+    var derecha:int = n / 2
+    var menor:float = ordenados[izquierda]
+    var mayor:float = ordenados[derecha]
+
+    return (menor + mayor) / 2.0
+
+fn mode(valores:list<float>) -> float:
+    var n:int = len(valores)
+
+    if n == 0:
+        return 0.0
+
+    var ordenados:list<float> = _sort(valores)
+    var mejor:float = ordenados[0]
+    var mejor_cuenta:int = 1
+    var actual:float = ordenados[0]
+    var cuenta:int = 1
+    var i:int = 1
+
+    while i < n:
+
+        if ordenados[i] == actual:
+            cuenta = cuenta + 1
+        else:
+            actual = ordenados[i]
+            cuenta = 1
+
+        if cuenta > mejor_cuenta:
+            mejor_cuenta = cuenta
+            mejor = actual
+
+        i = i + 1
+
+    return mejor
+
+fn variance(valores:list<float>) -> float:
+    var n:int = len(valores)
+
+    if n == 0:
+        return 0.0
+
+    var centro:float = mean(valores)
+    var acumulado:float = 0.0
+
+    for x in valores:
+        var diferencia:float = x - centro
+        acumulado = acumulado + diferencia * diferencia
+
+    return acumulado / n
+
+fn standard_deviation(valores:list<float>) -> float:
+    return math.square_root(variance(valores))
+
+fn percentile(valores:list<float>, p:float) -> float:
+    var n:int = len(valores)
+
+    if n == 0:
+        return 0.0
+
+    var ordenados:list<float> = _sort(valores)
+
+    if p <= 0.0:
+        return ordenados[0]
+
+    if p >= 100.0:
+        return ordenados[n - 1]
+
+    var posicion:int = math.floor_to_int(p * n / 100.0)
+
+    if posicion >= n:
+        posicion = n - 1
+
+    if posicion < 0:
+        posicion = 0
+
+    return ordenados[posicion]

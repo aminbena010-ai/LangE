@@ -1,0 +1,31 @@
+# Aleatoriedad y tiempo (fase 2.1): seed, random,
+# random_float, time_ms, epoch_ms y sleep_ms.
+#
+# Con la misma semilla la secuencia se repite: por eso el
+# programa puede comparar a == c.
+
+fn main():
+    seed(7)
+    var a:int = random(1, 10)
+    var b:float = random_float()
+    seed(7)
+    var c:int = random(1, 10)
+    print(a == c)
+    print(a >= 1 and a <= 10)
+    print(b >= 0.0 and b < 1.0)
+
+    var dentro:bool = true
+    var i:int = 0
+    while i < 100:
+        var v:int = random(-3, 3)
+        if v < -3 or v > 3:
+            dentro = false
+        i += 1
+    print(dentro)
+
+    var t:int = time_ms()
+    print(t >= 0)
+    var e:int = epoch_ms()
+    print(e > 1600000000000)
+    sleep_ms(20)
+    print(time_ms() >= t)

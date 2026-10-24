@@ -1,0 +1,20 @@
+# Biblioteca estandar: html.
+#
+# Escape y unescape de las entidades HTML mas comunes.
+
+fn escape(texto:string) -> string:
+    var resultado:string = replace(texto, "&", "&amp;")
+    resultado = replace(resultado, "<", "&lt;")
+    resultado = replace(resultado, ">", "&gt;")
+    resultado = replace(resultado, "\"", "&quot;")
+    resultado = replace(resultado, "'", "&#x27;")
+    return resultado
+
+fn unescape(texto:string) -> string:
+    var resultado:string = replace(texto, "&lt;", "<")
+    resultado = replace(resultado, "&gt;", ">")
+    resultado = replace(resultado, "&quot;", "\"")
+    resultado = replace(resultado, "&#x27;", "'")
+    resultado = replace(resultado, "&#39;", "'")
+    resultado = replace(resultado, "&amp;", "&")
+    return resultado

@@ -1,0 +1,4 @@
+fn main():
+    const C:int = 7
+    C = 8
+    print(C)

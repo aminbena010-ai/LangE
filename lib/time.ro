@@ -1,0 +1,20 @@
+# Biblioteca estandar: tiempo.
+#
+# Uso:
+#     import time
+#     var inicio:int = time.now_ms()
+
+fn now_ms() -> int:
+    return time_ms()
+
+fn unix_ms() -> int:
+    return epoch_ms()
+
+fn ms_to_seconds(milisegundos:int) -> int:
+    return milisegundos / 1000
+
+fn sleep(milisegundos:int):
+    sleep_ms(milisegundos)
+
+fn sleep_seconds(segundos:int):
+    sleep_ms(segundos * 1000)

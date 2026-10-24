@@ -1,0 +1,38 @@
+async fn pausa() -> int:
+    return 0
+
+async fn tarea(nombre:string) -> int:
+    try:
+        print(nombre + "-try")
+        await pausa()
+        var a:list<int> = [1]
+        if nombre == "a":
+            var x:int = a[5]
+            print(nombre + "-no")
+        print(nombre + "-fin")
+    catch e:
+        print(nombre + "-catch")
+    return 0
+
+async fn anidada() -> int:
+    try:
+        try:
+            print("c-try")
+            await pausa()
+            var a:list<int> = [0]
+            var x:int = a[3]
+        catch interno:
+            print("interno")
+            var b:list<int> = [0]
+            var y:int = b[4]
+    catch externo:
+        print("externo")
+    return 0
+
+fn main():
+    var a:task<int> = tarea("a")
+    var b:task<int> = tarea("b")
+    var c:task<int> = anidada()
+    await a
+    await b
+    await c

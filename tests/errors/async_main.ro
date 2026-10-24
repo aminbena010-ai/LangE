@@ -1,0 +1,4 @@
+# main debe ser síncrono (§52).
+
+async fn main():
+    pass

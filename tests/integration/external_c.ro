@@ -1,0 +1,16 @@
+# Funciones externas de C (fase A): la firma se declara
+# en .rivo con su fichero .c, que se compila aparte y se
+# enlaza con el programa.
+
+external "../fixtures/demo.c" fn sum(a:int, b:int) -> int
+external "../fixtures/demo.c" fn saludo(nombre:string)
+external "../fixtures/demo.c" fn etiqueta(texto:string) -> string
+external "../fixtures/demo.c" fn es_positivo(valor:int) -> bool
+
+fn main():
+    print(sum(2, 3))
+    saludo("E++")
+    print(etiqueta("E++"))
+    print(es_positivo(-3))
+    print(es_positivo(7))
+    print(sum(sum(1, 2), 3))

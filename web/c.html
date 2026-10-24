@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C → Rivo: guía de conversión</title>
+  <meta name="description" content="Guía de conversión de C a Rivo: equivalencias de sintaxis, memoria gestionada, listas y maps en lugar de punteros, f-strings en lugar de printf y FFI con external.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      document.documentElement.classList.add("js");
+      try {
+        var t = localStorage.getItem("rivo-theme");
+        document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        Rivo <small>.ro</small>
+      </a>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Abrir el menú">☰</button>
+      <nav class="site-nav" id="site-nav" data-site-nav aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html" aria-current="page">C</a>
+        <a href="cpp.html">C++</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar el tema">☀</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Guía de conversión</span>
+          <h1>De C a Rivo</h1>
+          <p class="lead">
+            Ambos se compilan a binario nativo con LLVM, pero parten de filosofías
+            opuestas: C te da control total y memoria manual; Rivo te da un
+            lenguaje de alto nivel con memoria gestionada, listas, maps, strings
+            seguros y errores en tiempo de compilación.
+          </p>
+          <p><a class="btn btn-ghost" href="docs.html">Ver la documentación completa</a></p>
+        </div>
+
+        <div class="callout">
+          <p>
+            <strong>La traducción mental rápida:</strong> en C tú diseñas la
+            memoria; en Rivo tú describes la <em>lógica</em>. Los punteros,
+            <code>malloc</code> y los arrays de tamaño fijo desaparecen; aparecen
+            <code>list&lt;T&gt;</code>, <code>map&lt;K, V&gt;</code>,
+            <code>string</code> gestionado y <code>try</code>/<code>catch</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Lado a lado</span>
+          <h2>El mismo programa en ambos lenguajes</h2>
+        </div>
+
+        <div class="grid grid--2">
+          <div>
+            <h3 class="mono">C</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int doble(int n) {
+    return n * 2;
+}
+
+int main(void) {
+    int edad = 20;
+    printf("Hola, tienes %d años\n", edad);
+    printf("%d\n", doble(edad));
+    return 0;
+}</code></pre>
+          </div>
+
+          <div>
+            <h3 class="mono">Rivo</h3>
+            <pre><code data-lang="rivo">fn doble(n:int) -> int:
+    return n * 2
+
+fn main():
+    var edad:int = 20
+    print(f"Hola, tienes {edad} años")
+    print(doble(edad))
+</code></pre>
+          </div>
+        </div>
+
+        <p class="text-muted">
+          Sin <code>#include</code>, sin <code>printf</code> con formatos, sin
+          <code>return 0</code> implícito que perseguir: <code>fn main()</code> es
+          el punto de entrada y <code>print</code> es una función incorporada.
+        </p>
+
+        <div class="grid grid--2 mt-1">
+          <div>
+            <h3 class="mono">C (bucle sobre array)</h3>
+            <pre><code>int numeros[3] = {1, 2, 3};
+
+for (int i = 0; i &lt; 3; i++) {
+    printf("%d\n", numeros[i]);
+}</code></pre>
+          </div>
+
+          <div>
+            <h3 class="mono">Rivo (bucle sobre lista)</h3>
+            <pre><code data-lang="rivo">var numeros:list&lt;int&gt; = [1, 2, 3]
+
+for n in numeros:
+    print(n)
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Equivalencias</span>
+          <h2>Tabla de traducción C → Rivo</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table class="compare">
+            <thead>
+              <tr><th>C</th><th>Rivo</th><th>Notas</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="from">#include &lt;stdio.h&gt;</td>
+                <td class="to">(no hace falta)</td>
+                <td>Las funciones de consola, texto y ficheros son builtins o stdlib.</td>
+              </tr>
+              <tr>
+                <td class="from">int main(void) { … }</td>
+                <td class="to">fn main():</td>
+                <td>Sin <code>int</code> de retorno ni llaves; el cuerpo va indentado.</td>
+              </tr>
+              <tr>
+                <td class="from">printf("%d\n", x);</td>
+                <td class="to">print(x) / print(f"{x}")</td>
+                <td>Los formatos <code>%d</code>, <code>%s</code>, <code>%.2f</code> se sustituyen por f-strings.</td>
+              </tr>
+              <tr>
+                <td class="from">scanf("%d", &amp;x);</td>
+                <td class="to">to_int(input())</td>
+                <td><code>input()</code> lee una línea como <code>string</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">int x = 5;</td>
+                <td class="to">var x:int = 5</td>
+                <td>Tipos obligatorios; sin <code>auto</code> ni inferencia.</td>
+              </tr>
+              <tr>
+                <td class="from">const int N = 10;</td>
+                <td class="to">const N:int = 10</td>
+                <td>Las constantes no pueden reasignarse.</td>
+              </tr>
+              <tr>
+                <td class="from">#define MAX 100</td>
+                <td class="to">const MAX:int = 100</td>
+                <td>No hay preprocesador: las constantes son del lenguaje.</td>
+              </tr>
+              <tr>
+                <td class="from">int doble(int n) { … }</td>
+                <td class="to">fn doble(n:int) -> int:</td>
+                <td>El tipo de retorno va tras <code>-&gt;</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">if (c) { … } else { … }</td>
+                <td class="to">if c: … else: …</td>
+                <td>Condición sin paréntesis y sin llaves; <code>bool</code> es obligatorio.</td>
+              </tr>
+              <tr>
+                <td class="from">while (c) { … }</td>
+                <td class="to">while c: …</td>
+                <td>Igual pero sin llaves.</td>
+              </tr>
+              <tr>
+                <td class="from">for (int i = 0; i &lt; n; i++)</td>
+                <td class="to">for i in range(0, n):</td>
+                <td><code>range</code> siempre lleva inicio y fin; el fin es exclusivo.</td>
+              </tr>
+              <tr>
+                <td class="from">switch (x) { … }</td>
+                <td class="to">✗ no existe</td>
+                <td>Rivo solo tiene <code>if</code>/<code>else</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">int a[3] = {1, 2, 3};</td>
+                <td class="to">var a:list&lt;int&gt; = [1, 2, 3]</td>
+                <td>Las listas crecen solas; no gestionas tamaño ni capacidad.</td>
+              </tr>
+              <tr>
+                <td class="from">a[i] / NULL</td>
+                <td class="to">a[i] / null</td>
+                <td>Un índice fuera de rango aborta con <code>IndexError</code> (capturable con <code>try</code>).</td>
+              </tr>
+              <tr>
+                <td class="from">char *s = "hola";</td>
+                <td class="to">var s:string = "hola"</td>
+                <td>Sin punteros ni terminador <code>'\0'</code> que cuidar; concatena con <code>+</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">malloc / free</td>
+                <td class="to">(no hace falta)</td>
+                <td>La memoria de strings, listas y maps la gestiona el runtime.</td>
+              </tr>
+              <tr>
+                <td class="from">int *p = &amp;x;</td>
+                <td class="to">✗ no existen punteros</td>
+                <td>Los valores se pasan por valor; las colecciones las maneja el runtime.</td>
+              </tr>
+              <tr>
+                <td class="from">struct Alumno { … };</td>
+                <td class="to">✗ no existen structs</td>
+                <td>Para agrupar datos usa <code>map&lt;string, string&gt;</code> o varias listas paralelas.</td>
+              </tr>
+              <tr>
+                <td class="from">try / catch</td>
+                <td class="to">try / catch error:</td>
+                <td><code>error</code> es un <code>string</code> con el mensaje. No existe <code>throw</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">extern int f(int);</td>
+                <td class="to">external "f.c" fn f(a:int) -> int</td>
+                <td>Al revés: Rivo llama a C con <code>external</code> (ver <a href="docs.html#externas">§13</a>).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Diferencias importantes</span>
+          <h2>Lo que C hace y Rivo no</h2>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card">
+            <span class="card-kicker">Memoria</span>
+            <h3>Sin punteros ni <code>malloc</code></h3>
+            <p>
+              No hay punteros, referencias, <code>free</code> ni fugas posibles.
+              El runtime gestiona strings, listas y maps en arenas propias.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Tipos</span>
+            <h3>Ocho tipos, nada más</h3>
+            <p>
+              Solo <code>int</code>, <code>float</code>, <code>string</code>,
+              <code>bool</code>, <code>char</code>, <code>list&lt;T&gt;</code>,
+              <code>map&lt;K, V&gt;</code> y <code>null</code>. Sin
+              <code>unsigned</code>, sin <code>int8_t</code>, sin
+              <code>size_t</code>, sin <code>union</code>.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Preprocesador</span>
+            <h3>Sin <code>#include</code> ni macros</h3>
+            <p>
+              No hay preprocesador: los módulos se importan con
+              <code>import</code> y las constantes con <code>const</code>. Tampoco
+              hay <code>goto</code> ni <code>switch</code>.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Compilación</span>
+            <h3>Mismo destino, distinto camino</h3>
+            <p>
+              C y Rivo terminan en un binario nativo (Rivo pasa por LLVM IR y
+              enlaza con <code>clang</code>), pero Rivo valida tipos y nombres
+              antes de generar código.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Errores</span>
+            <h3>Fallos claros, no segmentaciones</h3>
+            <p class="text-muted">
+              Un índice fuera de rango o una clave inexistente abortan con
+              <code>IndexError</code>/<code>KeyError</code> legibles, o se capturan
+              con <code>try</code>/<code>catch</code>.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">FFI</span>
+            <h3>Tu código C sigue sirviendo</h3>
+            <p>
+              Con <code>external</code> puedes seguir aprovechando bibliotecas y
+              funciones C existentes desde Rivo, sin reescribirlas.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Traducción útil</span>
+          <h2>Del día a día de C a Rivo</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table class="compare">
+            <thead>
+              <tr><th>Tarea</th><th>En C</th><th>En Rivo</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Longitud de una lista</td>
+                <td class="from">sizeof(a) / sizeof(a[0])</td>
+                <td class="to">len(a)</td>
+              </tr>
+              <tr>
+                <td>Concatenar texto</td>
+                <td class="from">strcat / snprintf</td>
+                <td class="to">a + b o concat(a, b)</td>
+              </tr>
+              <tr>
+                <td>Comparar texto</td>
+                <td class="from">strcmp(a, b) == 0</td>
+                <td class="to">a == b</td>
+              </tr>
+              <tr>
+                <td>Leer un fichero entero</td>
+                <td class="from">fopen + fread + cierre</td>
+                <td class="to">read_file(ruta)</td>
+              </tr>
+              <tr>
+                <td>Escribir un fichero</td>
+                <td class="from">fopen + fprintf + fclose</td>
+                <td class="to">write_file(ruta, texto)</td>
+              </tr>
+              <tr>
+                <td>División entera</td>
+                <td class="from">a / b (int)</td>
+                <td class="to">a / b (si ambos son <code>int</code>, trunca hacia cero)</td>
+              </tr>
+              <tr>
+                <td>Dormir 200 ms</td>
+                <td class="from">usleep(200000)</td>
+                <td class="to">sleep_ms(200)</td>
+              </tr>
+              <tr>
+                <td>Número aleatorio</td>
+                <td class="from">rand() % (max - min + 1) + min</td>
+                <td class="to">random(min, max)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <p>
+            <strong>Regla de oro al traducir:</strong> si en C estás pensando en
+            memoria, tamaño o índices manuales, para y pregúntate si Rivo ya lo
+            resuelve con una lista, un map o un builtin. Casi siempre la respuesta
+            es sí.
+          </p>
+        </div>
+
+        <p>
+          <a class="btn btn-primary" href="docs.html">Continuar con la documentación</a>
+          <a class="btn btn-ghost" href="cpp.html">Ver también: C++ → Rivo</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Rivo · guía de conversión de C</span>
+      <nav aria-label="Navegación del pie">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="cpp.html">C++</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

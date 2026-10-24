@@ -1,0 +1,11 @@
+# Listas y maps no admiten == / !=: la comparacion de
+# contenido no esta disenada y el codegen no puede
+# representarla (claude.md §13).
+fn main():
+    var a:list<int> = [1]
+    var b:list<int> = [1]
+
+    if a == b:
+        print("igual")
+    else:
+        print("distinta")

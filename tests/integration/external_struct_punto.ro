@@ -1,0 +1,14 @@
+# Struct POD en FFI (Fase 3.2): Punto tiene campos int,
+# se pasa como puntero a C.
+
+struct Punto:
+    var x:int
+    var y:int
+
+external "../fixtures/punto.c" fn distancia(p:Punto) -> float
+external "../fixtures/punto.c" fn suma_componentes(p:Punto) -> int
+
+fn main():
+    var p:Punto = Punto(3, 4)
+    print(distancia(p))
+    print(suma_componentes(p))

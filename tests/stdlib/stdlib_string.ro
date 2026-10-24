@@ -1,0 +1,7 @@
+import string
+
+fn main():
+    print(string.digits())
+    print(string.title_words("hola mundo rivo"))
+    print(string.swap_case("Rivo"))
+    print(string.hexdigits())

@@ -1,0 +1,12 @@
+fn main():
+    var valor:int = 4
+    print(valor++)
+    print(valor)
+    print(++valor)
+    print(valor--)
+    print(--valor)
+    print(7 // 2)
+    print(-7 // 2)
+    print(7 // -2)
+    print(-7 // -2)
+    print("valores:", valor, true, 2.5, 'R')

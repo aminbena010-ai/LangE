@@ -1,0 +1,87 @@
+# Biblioteca estandar: color.
+#
+# Aplica colores y estilos ANSI a texto. Las funciones
+# devuelven el texto entre el codigo y el reset, por lo que
+# imprimirlos muestra los colores en una terminal compatible.
+#
+# Los codigos basicos son los numeros ANSI: 30-37 y 90-97
+# para texto, 1 negrita, 4 subrayado, 7 invertido, 0 reset.
+# sin_color elimina todas las secuencias ESC [ ... m.
+#
+# Colores de 256 (0-255) y RGB verdadero (0-255 por canal):
+#     color_256("texto", 208)
+#     color_256_fondo("texto", 52)
+#     color_rgb("texto", 255, 128, 0)
+#     color_rgb_fondo("texto", 0, 0, 0)
+#
+# Los largos de las secuencias se pueden comprobar con len.
+#
+# Uso:
+#     import color
+#     print(color.red("alerta"))
+#     print(color.color_rgb("naranja", 255, 128, 0))
+
+external "c/color.c" fn color_colorize(codigo:int, texto:string) -> string
+
+external "c/color.c" fn color_no_color(texto:string) -> string
+
+external "c/color.c" fn color_colorize_256(codigo:int, plano:int, texto:string) -> string
+
+external "c/color.c" fn color_colorize_rgb(r:int, g:int, b:int, plano:int, texto:string) -> string
+
+fn colorize(texto:string, codigo:int) -> string:
+    return color_colorize(codigo, texto)
+
+fn red(texto:string) -> string:
+    return color_colorize(31, texto)
+
+fn green(texto:string) -> string:
+    return color_colorize(32, texto)
+
+fn yellow(texto:string) -> string:
+    return color_colorize(33, texto)
+
+fn blue(texto:string) -> string:
+    return color_colorize(34, texto)
+
+fn magenta(texto:string) -> string:
+    return color_colorize(35, texto)
+
+fn cyan(texto:string) -> string:
+    return color_colorize(36, texto)
+
+fn white(texto:string) -> string:
+    return color_colorize(37, texto)
+
+fn black(texto:string) -> string:
+    return color_colorize(30, texto)
+
+fn gray(texto:string) -> string:
+    return color_colorize(90, texto)
+
+fn bold(texto:string) -> string:
+    return color_colorize(1, texto)
+
+fn underline(texto:string) -> string:
+    return color_colorize(4, texto)
+
+fn invert(texto:string) -> string:
+    return color_colorize(7, texto)
+
+fn reset(texto:string) -> string:
+    return color_colorize(0, texto)
+
+fn color_256(texto:string, codigo:int) -> string:
+    return color_colorize_256(codigo, 0, texto)
+
+fn color_256_fondo(texto:string, codigo:int) -> string:
+    return color_colorize_256(codigo, 1, texto)
+
+fn color_rgb(texto:string, r:int, g:int, b:int) -> string:
+    return color_colorize_rgb(r, g, b, 0, texto)
+
+fn color_rgb_fondo(texto:string, r:int, g:int, b:int) -> string:
+    return color_colorize_rgb(r, g, b, 1, texto)
+
+fn no_color(texto:string) -> string:
+    return color_no_color(texto)

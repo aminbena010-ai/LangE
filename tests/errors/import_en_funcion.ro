@@ -1,0 +1,3 @@
+fn main():
+    import math
+    print(1)

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rivo — estilo Python y Godot, compilado en vez de interpretado</title>
+  <meta name="description" content="Rivo es un lenguaje de propósito general con sintaxis estilo Python y Godot (GDScript), pero compilado en vez de interpretado: tipado estático explícito, bloques sin llaves y un compilador en C con backend LLVM.">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:title" content="Rivo — estilo Python y Godot, compilado en vez de interpretado">
+  <meta property="og:description" content="Tipado estático explícito, sintaxis sin llaves y compilación nativa con LLVM.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      document.documentElement.classList.add("js");
+      try {
+        var t = localStorage.getItem("rivo-theme");
+        document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        Rivo <small>.ro</small>
+      </a>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Abrir el menú">☰</button>
+      <nav class="site-nav" id="site-nav" data-site-nav aria-label="Navegación principal">
+        <a href="index.html" aria-current="page">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html">C++</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar el tema">☀</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Estilo Python y Godot · compilado</span>
+          <h1>Código claro.<br>Tipos explícitos.<br><span>Compilado con LLVM.</span></h1>
+          <p class="lead">
+            Rivo es un lenguaje de propósito general con sintaxis estilo Python y
+            Godot (GDScript): bloques por indentación, sin llaves y con tipado
+            estático obligatorio. La diferencia está en la ejecución: se compila a
+            binario nativo con LLVM, no se interpreta.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="docs.html">Leer la documentación</a>
+            <a class="btn btn-ghost" href="python.html">Vengo de Python</a>
+          </div>
+          <p class="hero-note">Archivos <code>.ro</code> · binario <code>rivo</code> · backend LLVM</p>
+        </div>
+
+        <div>
+          <pre><code data-lang="rivo"># hola.ro
+fn doble(numero:int) -> int:
+    return numero * 2
+
+fn main():
+    var nombre:string = "Rivo"
+    var edad:int = 1
+    print(f"Hola desde {nombre}, versión {edad}")
+    print(doble(21))
+</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Características -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Filosofía</span>
+          <h2>Estilo Python y Godot, sin llaves</h2>
+          <p class="lead">
+            Rivo prioriza la corrección, la coherencia y los diagnósticos claros
+            sobre la cantidad de características. La simplicidad es una decisión,
+            no una carencia.
+          </p>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card">
+            <span class="card-kicker">Sintaxis</span>
+            <h3>Indentación, no llaves</h3>
+            <p>
+              Los bloques se abren con <code>:</code> y se delimitan con indentación.
+              Sin <code>{}</code>, sin <code>;</code> y sin ruido: el código se parece
+              al pseudocódigo.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Tipos</span>
+            <h3>Estático y explícito</h3>
+            <p>
+              Cada variable declara su tipo: <code>var edad:int = 20</code>.
+              Sin inferencia implícita ni conversiones silenciosas — lo que escribes
+              es lo que el compilador comprueba.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Diagnósticos</span>
+            <h3>Errores con estilo Python</h3>
+            <p>
+              <code>NameError</code>, <code>TypeError</code>, <code>SyntaxError</code>…
+              con archivo, línea, columna, código fuente, detalle y sugerencia.
+              Diseñados para leerse, no para decodificarse.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Biblioteca</span>
+            <h3>Stdlib en español</h3>
+            <p>
+              <code>matematicas</code>, <code>texto</code>, <code>fecha</code>,
+              <code>json</code>, <code>csv</code>, <code>estadistica</code> y más,
+              con nombres en español y funciones incorporadas en inglés.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Ejecución</span>
+            <h3>Binarios nativos</h3>
+            <p>
+              El compilador genera LLVM IR, lo verifica, lo optimiza y enlaza con
+              <code>clang</code>. El resultado es un ejecutable nativo para tu
+              plataforma, sin intérprete.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">FFI</span>
+            <h3>Integración con C</h3>
+            <p>
+              La sentencia <code>external</code> declara funciones de ficheros C
+              directamente desde Rivo y el compilador las compila y enlaza contigo.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ejemplo -->
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">En la práctica</span>
+          <h2>Así se ve un programa</h2>
+          <p class="lead">
+            Funciones con <code>fn</code>, retorno con <code>-> tipo</code>,
+            condicionales sin <code>elif</code>, bucles <code>while</code> y
+            <code>for</code>, listas y mapas con corchetes y f-strings con
+            interpolación <code>{}</code>.
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <pre><code data-lang="rivo">fn clasificar(edad:int) -> string:
+    if edad >= 18:
+        return "adulto"
+    else:
+        return "menor"
+
+fn main():
+    var nombres:list&lt;string&gt; = ["Ana", "Luis", "Rivo"]
+
+    for nombre in nombres:
+        print(f"{nombre}: {clasificar(18)}")
+
+    var edades:map&lt;string, int&gt; = [
+        "Ana": 20,
+        "Luis": 25
+    ]
+    print(edades["Ana"])
+</code></pre>
+
+          <div>
+            <ul class="checklist">
+              <li>Los tipos genéricos se escriben <code>list&lt;T&gt;</code> y <code>map&lt;K, V&gt;</code>.</li>
+              <li>Los mapas no usan llaves: se escriben con corchetes y <code>clave: valor</code>.</li>
+              <li><code>==</code> compara, <code>=</code> asigna; nunca se confunden.</li>
+              <li>Un identificador que empieza por <code>_</code> es privado.</li>
+              <li>Los errores de ejecución se capturan con <code>try</code> y <code>catch</code>.</li>
+            </ul>
+            <a class="btn btn-ghost" href="docs.html#sintaxis">Ver la referencia completa</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quickstart -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Empezar</span>
+          <h2>De cero a tu primer binario</h2>
+          <p class="lead">
+            Necesitas un compilador de C (GCC o Clang), CMake 3.16+, LLVM con sus
+            headers de desarrollo y <code>clang</code> para enlazar.
+          </p>
+        </div>
+
+        <ol class="steps">
+          <li>
+            <strong>Compila el compilador</strong>
+            <p>Desde la raíz del proyecto:</p>
+            <pre><code>cmake -S . -B build
+cmake --build build
+./build/rivo --help</code></pre>
+          </li>
+          <li>
+            <strong>Escribe tu programa</strong>
+            <p>Crea un fichero <code>hola.ro</code>:</p>
+            <pre><code data-lang="rivo">fn main():
+    print("Hola, mundo")
+</code></pre>
+          </li>
+          <li>
+            <strong>Compila y ejecuta</strong>
+            <p>Rivo genera un ejecutable nativo junto a tu código:</p>
+            <pre><code>./build/rivo hola.ro -o hola
+./hola</code></pre>
+          </li>
+          <li>
+            <strong>Instálalo en tu equipo</strong>
+            <p>Opciones de la CLI: <code>-o</code>, <code>-c</code>, <code>-S</code>,
+              <code>-emit-ir</code>, <code>-g</code>, <code>-O0</code>…<code>-O2</code>,
+              <code>-I dir</code>, <code>--run</code>, <code>--version</code> y
+              <code>--help</code>.</p>
+            <p>Con un manifiesto <code>rivo.toml</code>, los artefactos van a
+              <code>target/debug/</code> o <code>target/release/</code>, hay caché
+              por fecha y <code>rivo --run</code> compila y ejecuta en una pasada
+              (estilo Cargo).</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Guías -->
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Guías</span>
+          <h2>Vienes de otro lenguaje</h2>
+          <p class="lead">
+            Si ya programas en Python, Godot, C o C++, empieza por aquí:
+            equivalencias reales, diferencias importantes y advertencias
+            honestas.
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <a class="card" href="python.html">
+            <span class="card-kicker">Guía</span>
+            <h3>Rivo para programadores de Python</h3>
+            <p>
+              <code>def</code> → <code>fn</code>, anotaciones obligatorias, listas y
+              diccionarios tipados, f-strings, y las trampas de la división entera
+              y la ausencia de <code>elif</code>.
+            </p>
+          </a>
+
+          <a class="card" href="godot.html">
+            <span class="card-kicker">Guía</span>
+            <h3>Rivo y Godot</h3>
+            <p>
+              GDScript y Rivo comparten la indentación y el espíritu legible.
+              Qué se parece, qué cambia y qué no existe todavía (sin humo):
+              hoy no hay plugin oficial de Godot.
+            </p>
+          </a>
+
+          <a class="card" href="c.html">
+            <span class="card-kicker">Guía</span>
+            <h3>De C a Rivo</h3>
+            <p>
+              Mismo destino compilado, distinta filosofía: sin punteros ni
+              <code>malloc</code>, con listas, maps, strings gestionados y FFI
+              con <code>external</code> para tu código C existente.
+            </p>
+          </a>
+
+          <a class="card" href="cpp.html">
+            <span class="card-kicker">Guía</span>
+            <h3>De C++ a Rivo</h3>
+            <p>
+              <code>vector</code> → <code>list</code>, <code>cout</code> →
+              <code>print</code>, sin plantillas ni clases. Qué gana tu lógica y
+              qué conviene dejar en C++.
+            </p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Estado -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Estado del proyecto</span>
+          <h2>En construcción, sin adornos</h2>
+          <p class="lead">
+            Rivo se desarrolla en público. Que una sintaxis esté documentada no
+            garantiza que todas sus combinaciones estén implementadas.
+          </p>
+        </div>
+
+        <div class="callout callout--warn">
+          <p>
+            <strong>Diseñado ≠ implementado.</strong> La documentación distingue
+            con cuidado lo aprobado en el diseño de lo comprobado con pruebas.
+            Antes de depender de cualquier característica, ejecuta las suites del
+            proyecto: <code>sh tests/run_tests.sh</code> y
+            <code>sh tests/runtime/run_tests.sh</code>.
+          </p>
+        </div>
+
+        <ul class="checklist">
+          <li>Compilador completo: lexer, parser, semántica, LLVM IR, objeto y linker.</li>
+          <li>Biblioteca estándar en español: matemáticas, texto, fecha, json, csv, sistema…</li>
+          <li>Funciones incorporadas: texto, listas, ficheros, tiempo, aleatoriedad y consola.</li>
+          <li>Sistema de errores estilo Python con sugerencias y colores en terminal.</li>
+          <li>Integración con C mediante <code>external</code> y enlace con <code>clang</code>.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Rivo · estilo Python y Godot, compilado con LLVM · documentación del proyecto</span>
+      <nav aria-label="Navegación del pie">
+        <a href="docs.html">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html">C++</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

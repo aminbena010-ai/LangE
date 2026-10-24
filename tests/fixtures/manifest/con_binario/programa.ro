@@ -1,0 +1,4 @@
+# El ejecutable se llama app-especial (campo binario).
+
+fn main():
+    print("binario especial")

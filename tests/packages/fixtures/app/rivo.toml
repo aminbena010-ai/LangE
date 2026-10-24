@@ -1,0 +1,7 @@
+[proyecto]
+nombre = "app_paquetes"
+version = "0.1.0"
+entrada = "main.ro"
+
+[dependencias]
+saludo = "../libs/saludo"

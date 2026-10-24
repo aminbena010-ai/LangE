@@ -1,0 +1,4 @@
+from tri import triple
+
+fn main():
+    print(triple(3))

@@ -1,0 +1,9 @@
+import pathlib
+
+fn main():
+    print(pathlib.Path("a/../b.txt"))
+    print(pathlib.file_name("a/b.txt"))
+    print(pathlib.parent_directory("a/b.txt"))
+    print(pathlib.extension_of("archivo.tar.gz"))
+    print(pathlib.file_stem("archivo.tar.gz"))
+    print(len(pathlib.extensions_of("archivo.tar.gz")))

@@ -1,0 +1,107 @@
+# Biblioteca estandar: matematicas.
+#
+# Lo que la libreria matematica de C resuelve mejor (c/ficheros
+# se compila con el programa) y lo que en E++ es directo.
+#
+# Uso:
+#     import math
+#     print(math.square_root(2.0))
+
+external "c/math.c" fn square_root(x:float) -> float
+external "c/math.c" fn power(x:float, exponente:float) -> float
+external "c/math.c" fn sine(x:float) -> float
+external "c/math.c" fn cosine(x:float) -> float
+external "c/math.c" fn tangent(x:float) -> float
+external "c/math.c" fn ln(x:float) -> float
+external "c/math.c" fn log_10(x:float) -> float
+external "c/math.c" fn exponential(x:float) -> float
+external "c/math.c" fn pi() -> float
+external "c/math.c" fn euler() -> float
+external "c/math.c" fn round_to_int(x:float) -> int
+external "c/math.c" fn floor_to_int(x:float) -> int
+external "c/math.c" fn ceil_to_int(x:float) -> int
+external "c/math.c" fn is_integer(x:float) -> bool
+
+fn abs(valor:int) -> int:
+    if valor < 0:
+        return -valor
+    return valor
+
+fn abs_float(valor:float) -> float:
+    if valor < 0.0:
+        return -valor
+    return valor
+
+fn min(a:int, b:int) -> int:
+    if a < b:
+        return a
+    return b
+
+fn max(a:int, b:int) -> int:
+    if a > b:
+        return a
+    return b
+
+fn clamp(valor:int, limite_inferior:int, limite_superior:int) -> int:
+    if valor < limite_inferior:
+        return limite_inferior
+    if valor > limite_superior:
+        return limite_superior
+    return valor
+
+fn is_even(valor:int) -> bool:
+    return valor % 2 == 0
+
+fn is_odd(valor:int) -> bool:
+    return valor % 2 != 0
+
+fn sign(valor:int) -> int:
+    if valor > 0:
+        return 1
+    if valor < 0:
+        return -1
+    return 0
+
+fn integer_power(base:int, exponente:int) -> int:
+    # Solo exponentes no negativos: con un exponente
+    # negativo devuelve 1.
+    var resultado:int = 1
+    var i:int = 0
+    while i < exponente:
+        resultado = resultado * base
+        i = i + 1
+    return resultado
+
+fn factorial(n:int) -> int:
+    # Desborda por encima de 20.
+    var resultado:int = 1
+    var i:int = 2
+    while i <= n:
+        resultado = resultado * i
+        i = i + 1
+    return resultado
+
+fn gcd(a:int, b:int) -> int:
+    var x:int = abs(a)
+    var y:int = abs(b)
+    var resto:int = 0
+    while y != 0:
+        resto = x % y
+        x = y
+        y = resto
+    return x
+
+fn lcm(a:int, b:int) -> int:
+    var divisor:int = gcd(a, b)
+    if divisor == 0:
+        return 0
+    return abs(a / divisor * b)
+
+fn average(a:float, b:float) -> float:
+    return (a + b) / 2.0
+
+fn celsius_to_fahrenheit(grados:float) -> float:
+    return grados * 9.0 / 5.0 + 32.0
+
+fn fahrenheit_to_celsius(grados:float) -> float:
+    return (grados - 32.0) * 5.0 / 9.0

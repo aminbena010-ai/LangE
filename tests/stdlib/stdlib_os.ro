@@ -1,0 +1,10 @@
+import os
+
+fn main():
+    print(os.process_id() > 0)
+    print(len(os.working_directory()) > 0)
+    print(os.update_environment("RIVO_OS_TEST", "ready"))
+    print(os.environment_is_set("RIVO_OS_TEST"))
+    print(os.environment_value("RIVO_OS_TEST"))
+    print(os.path_exists("/tmp"))
+    print(os.path_size("/tmp") >= 0)

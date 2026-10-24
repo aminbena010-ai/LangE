@@ -1,0 +1,10 @@
+# Struct con campo string: no es POD, no puede cruzar FFI.
+
+struct Persona:
+    var nombre:string
+    var edad:int
+
+external "../fixtures/demo.c" fn malo(p:Persona) -> int
+
+fn main():
+    print("nunca")

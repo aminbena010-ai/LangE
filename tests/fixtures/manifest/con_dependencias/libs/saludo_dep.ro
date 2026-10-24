@@ -1,0 +1,6 @@
+# Modulo de prueba para [dependencias] del manifiesto.
+# Vive en libs/, no junto al programa principal: solo se
+# encuentra gracias al rivo.toml.
+
+fn mensaje_desde_dep() -> string:
+    return "modulo via manifiesto"

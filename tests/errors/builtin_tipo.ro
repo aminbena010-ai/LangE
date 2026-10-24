@@ -1,0 +1,4 @@
+# upper() solo admite strings.
+
+fn main():
+    print(upper(42))

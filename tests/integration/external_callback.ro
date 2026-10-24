@@ -1,0 +1,24 @@
+# Callbacks FFI (Fase 2): pasar una función E++ como
+# puntero a función C.
+
+external "../fixtures/callbacks.c" fn sum_squares(
+    n:int,
+    f:callback<int> -> int
+) -> int
+
+external "../fixtures/callbacks.c" fn max2(
+    a:int,
+    b:int,
+    cmp:callback<int, int> -> int
+) -> int
+
+fn cuadrado(x:int) -> int:
+    return x * x
+
+fn compara(a:int, b:int) -> int:
+    return a - b
+
+fn main():
+    print(sum_squares(5, cuadrado))
+    print(max2(3, 7, compara))
+    print(max2(10, 2, compara))

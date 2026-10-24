@@ -1,0 +1,4 @@
+import circ_b
+
+fn helper():
+    print(1)

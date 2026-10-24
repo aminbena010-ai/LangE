@@ -1,0 +1,15 @@
+from math import sum
+
+fn truth() -> bool:
+    return true
+
+fn announce():
+    print("callable")
+
+fn main():
+    var sumabasica = sum
+    print(sumabasica(2, 3))
+    var predicate = truth
+    print(predicate())
+    var notification = announce
+    notification()

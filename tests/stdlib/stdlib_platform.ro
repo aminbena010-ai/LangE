@@ -1,0 +1,6 @@
+import platform
+
+fn main():
+    print(len(platform.system_name()) > 0)
+    print(len(platform.machine()) > 0)
+    print(platform.processor_count() > 0)

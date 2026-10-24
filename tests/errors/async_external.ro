@@ -1,0 +1,6 @@
+# async solo puede preceder a fn, nunca a external (§52).
+
+async external "no_importa.c" fn g() -> int
+
+fn main():
+    pass

@@ -1,0 +1,4 @@
+fn main():
+    var edades:map<string, int> = ["Ana": 20]
+    for clave in edades:
+        print(clave)

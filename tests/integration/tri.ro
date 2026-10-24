@@ -1,0 +1,4 @@
+from math import sum
+
+fn triple(x:int) -> int:
+    return sum(x, sum(x, x))

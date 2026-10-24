@@ -1,0 +1,32 @@
+# Biblioteca estandar: fnmatch.
+#
+# Comparacion de nombres con los comodines * y ?. Los corchetes
+# y las reglas dependientes de plataforma no estan implementados.
+
+fn matches(nombre:string, patron:string) -> bool:
+    var nombre_i:int = 0
+    var patron_i:int = 0
+    var ultima_estrella:int = -1
+    var reanudar_nombre:int = 0
+
+    while nombre_i < len(nombre):
+        if patron_i < len(patron) and (substring(patron, patron_i, 1) == "?" or substring(patron, patron_i, 1) == substring(nombre, nombre_i, 1)):
+            nombre_i = nombre_i + 1
+            patron_i = patron_i + 1
+        else:
+            if patron_i < len(patron) and substring(patron, patron_i, 1) == "*":
+                ultima_estrella = patron_i
+                patron_i = patron_i + 1
+                reanudar_nombre = nombre_i
+            else:
+                if ultima_estrella >= 0:
+                    patron_i = ultima_estrella + 1
+                    reanudar_nombre = reanudar_nombre + 1
+                    nombre_i = reanudar_nombre
+                else:
+                    return false
+
+    while patron_i < len(patron) and substring(patron, patron_i, 1) == "*":
+        patron_i = patron_i + 1
+
+    return patron_i == len(patron)

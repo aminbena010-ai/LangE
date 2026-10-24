@@ -1,0 +1,41 @@
+# Pruebas de la biblioteca csv.
+
+import csv
+
+fn main():
+    var texto:string = "nombre,edad\n\"Perez, Ana\",25\nJuan,30"
+    var filas:list<list<string>> = csv.parse(texto)
+
+    print(len(filas))
+    print(csv.columns(filas))
+    print(filas[0][0])
+    print(filas[1][0])
+    print(filas[2][1])
+
+    print(csv.format(filas))
+    print(csv.row_to_string(["a", "b,c", "d\"e"]))
+
+    print(csv.quote("hola"))
+    print(csv.quote("a,b"))
+    print(csv.quote("say \"hi\""))
+    print(csv.unquote("\"hola\""))
+    print(csv.unquote("\"say \"\"hi\"\"\""))
+    print(csv.unquote("hola"))
+
+    var con_salto:string = csv.format([["uno\ndos", "tres"]])
+    print(con_salto)
+    var vuelta:list<list<string>> = csv.parse(con_salto)
+    print(len(vuelta))
+    print(len(vuelta[0]))
+    print(vuelta[0][0])
+
+    var vacio:list<list<string>> = csv.parse("")
+    print(len(vacio))
+    print(csv.columns(vacio))
+
+    var fin_coma:list<list<string>> = csv.parse("a,b,")
+    print(len(fin_coma[0]))
+    print(fin_coma[0][2])
+
+    var simple:list<list<string>> = csv.parse("a,b\n")
+    print(len(simple))

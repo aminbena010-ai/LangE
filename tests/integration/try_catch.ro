@@ -1,0 +1,42 @@
+fn main():
+    var a:list<int> = [1, 2, 3]
+    var m:map<string, int> = ["k": 1]
+
+    try:
+        print("bloque 1")
+        var x:int = a[10]
+        print("no llega")
+    catch error:
+        print(error)
+
+    try:
+        var y:int = m["noexiste"]
+        print("no llega")
+    catch error:
+        print(error)
+
+    try:
+        print("sin error")
+    catch error:
+        print("no llega")
+
+    var i:int = 0
+    while i < 2:
+        try:
+            var z:int = a[99]
+        catch interno:
+            print("interno")
+        i = i + 1
+
+    try:
+        try:
+            var w:int = a[98]
+        catch interior:
+            print(interior)
+            var v:int = a[97]
+        print("no llega")
+    catch exterior:
+        print("exterior:")
+        print(exterior)
+
+    print("fin")

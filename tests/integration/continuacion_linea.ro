@@ -1,0 +1,42 @@
+fn suma(a:int, b:int) -> int:
+    return a + b
+
+fn main():
+    # Llamada con los argumentos en varias líneas
+    var a:int = suma(
+        10,   # primer
+        20,
+    )
+
+    # Llamada anidada dentro de un argumento
+    var b:int = suma(suma(
+        1,
+        2
+    ), 3)
+
+    # Agrupación con el operador en otra línea
+    var c:int = (
+        4 +
+        5
+    )
+
+    # Lista y llamada combinadas
+    var lista:list<int> = [
+        1,
+        2
+    ]
+
+    var d:int = suma(
+        lista[0],
+        lista[1]
+    )
+
+    # Condición entre paréntesis en varias líneas
+    if (a == 30 and
+        b == 6 and
+        c == 9 and
+        d == 3):
+
+        print(
+            "continuacion"
+        )

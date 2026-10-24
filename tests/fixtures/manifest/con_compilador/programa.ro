@@ -1,0 +1,5 @@
+# Compila con -O2 y -g gracias al rivo.toml de este
+# directorio, aunque no se pasen en la línea de comandos.
+
+fn main():
+    print("compilado con opciones del manifiesto")

@@ -1,0 +1,17 @@
+# Correccion de fases: int / int es entero (coherente con
+# el codegen) y la division de flotantes sigue siendo real.
+
+fn main():
+    var a:int = 7 / 2
+    print(a)
+    print(-7 / 2)
+    print(5 / 2 + 1)
+
+    var b:float = 7.0 / 2.0
+    print(b)
+    print(7.0 / 2)
+
+    var total:int = 10
+    var partes:int = 4
+    print(total / partes)
+    print(total / partes * partes)

@@ -1,0 +1,6 @@
+# buffer<T> no puede ser el retorno de una función externa.
+
+external "../fixtures/buffer.c" fn mal_retorno() -> buffer<int>
+
+fn main():
+    print("nunca")

@@ -1,0 +1,8 @@
+# Una función externa declarada dentro de un módulo
+# importado también se compila y se enlaza.
+
+import external_lib
+
+fn main():
+    print(external_lib.doble(21))
+    external_lib.presentar("modulo")

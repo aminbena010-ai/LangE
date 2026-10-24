@@ -1,0 +1,180 @@
+# Bibliotecas estandar de Rivo con nombres de Python
+
+## Objetivo
+
+Desarrollar una biblioteca estandar amplia, practica y facil de aprender para
+Rivo, con nombres de modulos iguales a los de la biblioteca estandar de Python
+cuando exista un equivalente. Por ejemplo: `json`, `math`, `csv` y `random`.
+Las APIs y la mayor parte de cada biblioteca deben estar escritas en Rivo
+(`.ro`), no en C ni en C++. Los programas deben poder resolver tareas comunes
+importando bibliotecas de Rivo, sin tener que escribir ni enlazar C o C++.
+
+El C que ya forma parte del compilador o del runtime puede proporcionar soporte
+interno minimo cuando haga falta interactuar con el sistema operativo o con una
+capacidad nativa. No debe convertirse en la implementacion publica de las
+bibliotecas. Mantener esa frontera pequena, documentada y reemplazable.
+
+Los nombres de este catalogo son nombres de modulos, no una promesa de que Rivo
+copie toda la API o el comportamiento de Python. Cada modulo debe tener una API
+idiomatica, documentada y probada en Rivo. Si una funcionalidad no tiene un
+equivalente razonable en la biblioteca estandar de Python, no inventar un nombre
+de Python: proponerla por separado como extension propia de Rivo.
+
+## Como construirlas
+
+- Tratar el catalogo de abajo como 100 modulos objetivo, no como 100 modulos ya
+  implementados. Marcar una biblioteca como disponible solo cuando su codigo,
+  pruebas y documentacion existan.
+- Usar los nombres publicos de los modulos de Python tal como aparecen en este
+  catalogo; no reemplazarlos por traducciones ni por nombres propios de Rivo.
+- Crear APIs pequenas, coherentes y especificas de Rivo. Empezar por las
+  operaciones esenciales y ampliar segun necesidades reales.
+- Reutilizar e importar bibliotecas de Rivo existentes en lugar de duplicar su
+  funcionalidad. Mantener cada modulo enfocado y con responsabilidades claras.
+- Preferir implementaciones portables en Rivo. Si una operacion requiere soporte
+  nativo, limitarlo al compilador/runtime y ofrecer errores claros cuando no se
+  admita en una plataforma.
+- Acompanar cada modulo implementado con pruebas, ejemplos y documentacion de
+  sus funciones, tipos, errores y limitaciones.
+- Migrar o retirar una implementacion C solo despues de que exista un reemplazo
+  equivalente en Rivo y sus pruebas pasen. No borrar soporte del compilador o
+  runtime sin comprobar antes sus usos.
+- Priorizar primero las bibliotecas comunes y pequenas; abordar formatos,
+  sistema y redes despues; dejar las capacidades complejas para fases
+  posteriores.
+
+## Catalogo de 100 bibliotecas
+
+«Existente» indica que ya hay un archivo `.ro` que implementa ese modulo con el
+mismo nombre. Los archivos actuales con nombres distintos solo cuentan cuando
+se migren o renombren de forma segura; no crear copias en paralelo.
+
+### Texto y caracteres
+
+001. `string` — constantes, busqueda y operaciones habituales con cadenas. (Existente)
+002. `textwrap` — ajuste de lineas y sangria. (Existente)
+003. `re` — expresiones regulares y busqueda de patrones. (Existente)
+004. `difflib` — comparacion de textos y generacion de diferencias. (Existente)
+005. `fnmatch` — comparacion de nombres con patrones tipo comodin. (Existente)
+006. `glob` — busqueda de archivos usando patrones.
+007. `codecs` — codificacion y decodificacion de texto. (Existente)
+008. `unicodedata` — consulta de propiedades de caracteres Unicode.
+009. `html` — escape, entidades y utilidades para HTML. (Existente)
+010. `xml` — lectura y escritura de datos XML.
+
+### Colecciones y estructuras de datos
+
+011. `collections` — estructuras de datos de uso general.
+012. `array` — secuencias compactas de valores del mismo tipo.
+013. `heapq` — operaciones de monticulo y colas de prioridad.
+014. `queue` — colas seguras para uso concurrente.
+015. `bisect` — busqueda e insercion ordenada en secuencias.
+016. `itertools` — iteradores y combinaciones eficientes.
+017. `functools` — herramientas para funciones y memorizacion.
+018. `operator` — operadores como funciones reutilizables.
+019. `dataclasses` — definicion concisa de tipos de datos.
+020. `enum` — enumeraciones y conjuntos de constantes con nombre.
+
+### Matematicas y numeros
+
+021. `math` — funciones matematicas, constantes y redondeo. (Existente)
+022. `cmath` — funciones matematicas para numeros complejos.
+023. `decimal` — aritmetica decimal de precision controlada.
+024. `fractions` — numeros racionales y fracciones.
+025. `random` — generacion aleatoria y selecciones. (Existente)
+026. `statistics` — estadistica descriptiva basica. (Existente)
+027. `numbers` — categorias y operaciones comunes de numeros.
+028. `secrets` — generacion de valores aleatorios para usos sensibles.
+029. `types` — utilidades para tipos y objetos.
+030. `weakref` — referencias debiles a objetos.
+
+### Formatos y serializacion
+
+031. `json` — lectura, escritura y consulta de valores JSON. (Existente)
+032. `csv` — lectura y escritura de tablas CSV. (Existente)
+033. `configparser` — lectura y escritura de configuracion INI.
+034. `tomllib` — lectura de archivos de configuracion TOML.
+035. `plistlib` — lectura y escritura de listas de propiedades.
+036. `struct` — empaquetado y desempaquetado de datos binarios.
+037. `pickle` — serializacion de valores Rivo compatibles.
+038. `shelve` — almacenamiento persistente sencillo de valores.
+039. `dbm` — almacenamiento sencillo basado en claves.
+040. `pprint` — presentacion legible de estructuras de datos.
+
+### Archivos y sistema operativo
+
+041. `os` — operaciones del sistema operativo, archivos y entorno. (Existente)
+042. `pathlib` — construccion y consulta de rutas como objetos. (Existente)
+043. `shutil` — operaciones de alto nivel con archivos y directorios. (Existente)
+044. `tempfile` — creacion y gestion de archivos temporales.
+045. `filecmp` — comparacion de archivos y directorios.
+046. `stat` — consulta de tipos y metadatos de archivos.
+047. `fileinput` — lectura consecutiva de archivos de entrada.
+048. `platform` — informacion del sistema y la plataforma. (Existente)
+049. `sys` — informacion y servicios del entorno de ejecucion.
+050. `subprocess` — ejecucion controlada de procesos externos.
+
+### Tiempo y fechas
+
+051. `time` — reloj, marcas de tiempo y pausas. (Existente)
+052. `datetime` — fechas, horas y operaciones de calendario. (Existente)
+053. `calendar` — calendarios, semanas y dias laborables. (Existente)
+054. `zoneinfo` — zonas horarias y conversiones.
+055. `sched` — planificacion de tareas por tiempo.
+056. `timeit` — medicion repetible de pequenos fragmentos de codigo.
+057. `locale` — formatos regionales de numeros y fechas.
+058. `threading` — tareas concurrentes mediante hilos.
+059. `multiprocessing` — ejecucion concurrente mediante procesos.
+060. `concurrent.futures` — interfaz de alto nivel para tareas concurrentes.
+
+### Redes y protocolos
+
+061. `socket` — conexiones y operaciones de red de bajo nivel.
+062. `ssl` — utilidades de TLS para conexiones seguras.
+063. `select` — espera de actividad en conexiones.
+064. `selectors` — multiplexacion de conexiones de red.
+065. `asyncio` — entrada/salida asincronica y tareas.
+066. `urllib` — apertura y analisis de recursos URL.
+067. `http` — componentes y constantes del protocolo HTTP.
+068. `email` — construccion y analisis de mensajes de correo.
+069. `ftplib` — operaciones con servidores FTP.
+070. `smtplib` — envio de correo mediante SMTP.
+
+### Hashes, identificadores y seguridad
+
+071. `hashlib` — funciones hash criptograficas.
+072. `hmac` — codigos de autenticacion basados en hash.
+073. `zlib` — compresion y suma de comprobacion.
+074. `base64` — codificacion y decodificacion Base64. (Existente)
+075. `binascii` — conversion entre datos binarios y ASCII.
+076. `uuid` — generacion y analisis de identificadores UUID.
+077. `getpass` — lectura de contrasenas sin mostrarlas en pantalla.
+078. `ipaddress` — lectura y consulta de direcciones IP.
+079. `socketserver` — servidores de red basicos.
+080. `xmlrpc` — cliente y servidor XML-RPC.
+
+### Desarrollo, pruebas y diagnostico
+
+081. `logging` — registro configurable de eventos y errores.
+082. `traceback` — representacion y consulta de errores.
+083. `warnings` — generacion y filtrado de advertencias.
+084. `unittest` — pruebas automatizadas y aserciones.
+085. `doctest` — pruebas ejecutables incluidas en la documentacion.
+086. `pdb` — depuracion interactiva, si la plataforma lo permite.
+087. `cProfile` — perfilado de rendimiento.
+088. `inspect` — inspeccion de funciones y objetos.
+089. `ast` — lectura y recorrido de arboles de sintaxis.
+090. `argparse` — analisis de opciones de linea de comandos.
+
+### Terminal, documentos y contenido
+
+091. `curses` — interfaces de texto para terminales compatibles.
+092. `cmd` — construccion de interpretes de comandos sencillos.
+093. `shlex` — analisis de sintaxis de comandos tipo shell.
+094. `pydoc` — generacion y consulta de documentacion.
+095. `gettext` — traducciones y mensajes localizados.
+096. `zipfile` — lectura y escritura de archivos ZIP.
+097. `tarfile` — lectura y escritura de archivos TAR.
+098. `gzip` — compresion y descompresion GZIP.
+099. `bz2` — compresion y descompresion BZ2.
+100. `lzma` — compresion y descompresion LZMA.

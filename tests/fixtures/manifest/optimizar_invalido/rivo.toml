@@ -1,0 +1,7 @@
+# Manifiesto con un valor inválido para optimizar.
+
+[proyecto]
+nombre = "optimizar_invalido"
+
+[compilador]
+optimizar = "9"

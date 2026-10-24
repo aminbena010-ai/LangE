@@ -1,0 +1,8 @@
+# await sobre un valor que no es task<T> (§52).
+
+async fn f(n:int) -> int:
+    var x:int = await n
+    return n
+
+fn main():
+    pass

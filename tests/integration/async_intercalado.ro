@@ -1,0 +1,14 @@
+async fn pausa() -> int:
+    return 0
+
+async fn eco(nombre:string) -> int:
+    print(nombre + "-1")
+    await pausa()
+    print(nombre + "-2")
+    return 0
+
+fn main():
+    var a:task<int> = eco("a")
+    var b:task<int> = eco("b")
+    await a
+    await b

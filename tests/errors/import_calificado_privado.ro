@@ -1,0 +1,4 @@
+import math as math
+
+fn main():
+    print(math._doble(2))

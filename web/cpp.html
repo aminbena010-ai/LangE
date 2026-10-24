@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C++ → Rivo: guía de conversión</title>
+  <meta name="description" content="Guía de conversión de C++ a Rivo: equivalencias de sintaxis, vector y map de la STL frente a list y map de Rivo, sin plantillas ni clases y con tipado explícito.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      document.documentElement.classList.add("js");
+      try {
+        var t = localStorage.getItem("rivo-theme");
+        document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        Rivo <small>.ro</small>
+      </a>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Abrir el menú">☰</button>
+      <nav class="site-nav" id="site-nav" data-site-nav aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html">C</a>
+        <a href="cpp.html" aria-current="page">C++</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar el tema">☀</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Guía de conversión</span>
+          <h1>De C++ a Rivo</h1>
+          <p class="lead">
+            C++ y Rivo se compilan ambos a nativo, pero con objetivos distintos:
+            C++ maximiza el control y la abstracción de bajo nivel; Rivo
+            maximiza la legibilidad con un lenguaje pequeño, tipado y sin
+            gestión manual de memoria.
+          </p>
+          <p><a class="btn btn-ghost" href="docs.html">Ver la documentación completa</a></p>
+        </div>
+
+        <div class="callout callout--warn">
+          <p>
+            <strong>Sin humo:</strong> Rivo no tiene clases, plantillas, lambdas,
+            namespaces ni la STL. No pretende sustituir a C++ para motores,
+            RAII o programación de sistemas. Su nicho es la lógica clara y
+            compilada; lo que ya tienes en C++ se puede seguir llamando desde
+            Rivo con <code>external</code> (solo tipos simples).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Lado a lado</span>
+          <h2>El mismo programa en ambos lenguajes</h2>
+        </div>
+
+        <div class="grid grid--2">
+          <div>
+            <h3 class="mono">C++</h3>
+            <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+int doble(int n) {
+    return n * 2;
+}
+
+int main() {
+    std::vector&lt;std::string&gt; nombres = {"Ana", "Luis"};
+
+    for (const auto&amp; nombre : nombres) {
+        std::cout &lt;&lt; nombre &lt;&lt; ": " &lt;&lt; doble(21)
+                  &lt;&lt; std::endl;
+    }
+    return 0;
+}</code></pre>
+          </div>
+
+          <div>
+            <h3 class="mono">Rivo</h3>
+            <pre><code data-lang="rivo">fn doble(n:int) -> int:
+    return n * 2
+
+fn main():
+    var nombres:list&lt;string&gt; = ["Ana", "Luis"]
+
+    for nombre in nombres:
+        print(f"{nombre}: {doble(21)}")
+</code></pre>
+          </div>
+        </div>
+
+        <p class="text-muted">
+          El <code>range-for</code> pasa a <code>for x in lista:</code>,
+          <code>std::cout</code> desaparece y la plantilla implícita de
+          <code>vector&lt;string&gt;</code> se convierte en un tipo explícito
+          <code>list&lt;string&gt;</code>.
+        </p>
+
+        <div class="grid grid--2 mt-1">
+          <div>
+            <h3 class="mono">C++ (mapa y búsqueda)</h3>
+            <pre><code>std::map&lt;std::string, int&gt; edades;
+edades["Ana"] = 20;
+
+auto it = edades.find("Ana");
+if (it != edades.end()) {
+    std::cout &lt;&lt; it-&gt;second &lt;&lt; std::endl;
+}</code></pre>
+          </div>
+
+          <div>
+            <h3 class="mono">Rivo (mapa directo)</h3>
+            <pre><code data-lang="rivo">var edades:map&lt;string, int&gt; = ["Ana": 20]
+
+# una clave inexistente aborta; revísala con try/catch
+try:
+    print(edades["Ana"])
+catch error:
+    print("sin dato: " + error)
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Equivalencias</span>
+          <h2>Tabla de traducción C++ → Rivo</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table class="compare">
+            <thead>
+              <tr><th>C++</th><th>Rivo</th><th>Notas</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="from">#include &lt;iostream&gt;</td>
+                <td class="to">(no hace falta)</td>
+                <td><code>print</code> es un builtin; la stdlib se importa con <code>import</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">int main() { … }</td>
+                <td class="to">fn main():</td>
+                <td>Sin llaves ni <code>return 0</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">std::cout &lt;&lt; x &lt;&lt; std::endl;</td>
+                <td class="to">print(x)</td>
+                <td>O <code>print(f"…{x}…")</code> para formato.</td>
+              </tr>
+              <tr>
+                <td class="from">std::cin &gt;&gt; x;</td>
+                <td class="to">to_int(input())</td>
+                <td><code>input()</code> devuelve siempre una línea como <code>string</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">int x = 5;</td>
+                <td class="to">var x:int = 5</td>
+                <td>Obligatorio escribir el tipo; no hay <code>auto</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">auto x = 5;</td>
+                <td class="to">(no existe)</td>
+                <td>Sin inferencia de tipos.</td>
+              </tr>
+              <tr>
+                <td class="from">const int N = 10;</td>
+                <td class="to">const N:int = 10</td>
+                <td>También existe <code>constexpr</code> → <code>const</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">void f(int a) { … }</td>
+                <td class="to">fn f(a:int):</td>
+                <td>Sin <code>void</code>: si no hay <code>-&gt; tipo</code>, no devuelve nada.</td>
+              </tr>
+              <tr>
+                <td class="from">if (c) { } else if (c2) { }</td>
+                <td class="to">if c: … elif c2: …</td>
+                <td><code>else if</code> pasa a <code>elif</code>; no existe <code>elseif</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">for (int i = 0; i &lt; n; ++i)</td>
+                <td class="to">for i in range(0, n):</td>
+                <td>Sin <code>++</code>; se usa <code>+= 1</code> cuando hace falta.</td>
+              </tr>
+              <tr>
+                <td class="from">for (const auto&amp; v : lista)</td>
+                <td class="to">for v in lista:</td>
+                <td>Recorrido directo, sin <code>auto&amp;</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">switch (x) { … }</td>
+                <td class="to">✗ no existe</td>
+                <td>Solo <code>if</code>/<code>else</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">std::vector&lt;int&gt; v;</td>
+                <td class="to">var v:list&lt;int&gt; = []</td>
+                <td>Sin <code>push_back</code>: se usa <code>v.add(x)</code>; <code>v.len()</code> da la longitud.</td>
+              </tr>
+              <tr>
+                <td class="from">std::map&lt;K, V&gt; m;</td>
+                <td class="to">var m:map&lt;K, V&gt; = [k: v]</td>
+                <td>Escrito con corchetes, nunca con llaves.</td>
+              </tr>
+              <tr>
+                <td class="from">std::string s = "hola";</td>
+                <td class="to">var s:string = "hola"</td>
+                <td>Concatenación con <code>+</code>; memoria gestionada por el runtime.</td>
+              </tr>
+              <tr>
+                <td class="from">nullptr</td>
+                <td class="to">null</td>
+                <td><code>null</code> es valor y tipo oficial del lenguaje.</td>
+              </tr>
+              <tr>
+                <td class="from">try { } catch (…) { }</td>
+                <td class="to">try: … catch error:</td>
+                <td><code>error</code> es un <code>string</code> con el mensaje; no hay tipos de excepción.</td>
+              </tr>
+              <tr>
+                <td class="from">class Alumno { … };</td>
+                <td class="to">✗ no existen clases</td>
+                <td>Sin herencia, sobrecarga ni métodos. La unidad de reutilización es la función y el módulo.</td>
+              </tr>
+              <tr>
+                <td class="from">template&lt;typename T&gt; …</td>
+                <td class="to">✗ no existen plantillas</td>
+                <td>La única genérica del lenguaje son <code>list&lt;T&gt;</code> y <code>map&lt;K, V&gt;</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">auto f = [](int x) { … };</td>
+                <td class="to">✗ no existen lambdas</td>
+                <td>Declara una función con nombre: <code>fn f(x:int) -> …:</code>.</td>
+              </tr>
+              <tr>
+                <td class="from">namespace geo { … }</td>
+                <td class="to">módulo <code>.ro</code> + import</td>
+                <td>El espacio de nombres es plano: los nombres no pueden chocar.</td>
+              </tr>
+              <tr>
+                <td class="from">std::unique_ptr&lt;T&gt;</td>
+                <td class="to">(no hace falta)</td>
+                <td>No hay punteros ni propietarios: el runtime libera al terminar.</td>
+              </tr>
+              <tr>
+                <td class="from">extern "C" int f(int);</td>
+                <td class="to">external "f.c" fn f(a:int) -> int</td>
+                <td>La FFI de Rivo admite solo tipos simples (ver <a href="docs.html#externas">§13</a>).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Diferencias importantes</span>
+          <h2>Lo que C++ hace y Rivo no</h2>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card">
+            <span class="card-kicker">POO</span>
+            <h3>Sin clases ni herencia</h3>
+            <p>
+              No hay constructores, sobrecarga, polimorfismo ni visibilidad
+              <code>public</code>/<code>private</code> de clases. La privacidad en
+              Rivo es la función que empieza por <code>_</code>.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Genéricos</span>
+            <h3>Sin plantillas</h3>
+            <p>
+              No hay <code>template</code> ni <code>concept</code>. Las colecciones
+              genéricas del lenguaje son <code>list&lt;T&gt;</code> y
+              <code>map&lt;K, V&gt;</code>, y ya vienen resueltas.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Funciones</span>
+            <h3>Sin lambdas ni sobrecarga</h3>
+            <p>
+              Una función tiene un nombre y una firma. Dos funciones con el mismo
+              nombre son un error, no una sobrecarga.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Memoria</span>
+            <h3>Sin RAII, punteros ni <code>new</code></h3>
+            <p>
+              No hay <code>new</code>/<code>delete</code>, smart pointers ni
+              movimiento. Strings, listas y maps los gestiona el runtime.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Tipos</span>
+            <h3>Ocho tipos, nada más</h3>
+            <p>
+              Sin <code>size_t</code>, <code>int64_t</code>, <code>unsigned</code>,
+              <code>enum</code> ni <code>struct</code>. Agrupar datos hoy se hace
+              con maps y listas.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-kicker">Cabeceras</span>
+            <h3>Sin <code>#include</code> ni STL</h3>
+            <p>
+              Sin <code>&lt;vector&gt;</code>, <code>&lt;string&gt;</code> ni
+              <code>&lt;map&gt;</code>: las colecciones son del lenguaje y la
+              stdlib se importa con <code>import texto</code>, etc.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          <p>
+            <strong>Qué gana tu código:</strong> desaparecen los errores de
+            compilación kilométricos de plantillas, los segmentations fault por
+            punteros colgantes y la gestión manual de memoria. Lo que queda es la
+            lógica, con errores apuntando a archivo, línea y columna.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Traducción útil</span>
+          <h2>Del día a día de C++ a Rivo</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table class="compare">
+            <thead>
+              <tr><th>Tarea</th><th>En C++</th><th>En Rivo</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Añadir a un vector</td>
+                <td class="from">v.push_back(x)</td>
+                <td class="to">v.add(x)</td>
+              </tr>
+              <tr>
+                <td>Tamaño de un vector</td>
+                <td class="from">v.size()</td>
+                <td class="to">v.len() / len(v)</td>
+              </tr>
+              <tr>
+                <td>Ordenar una copia</td>
+                <td class="from">auto w = v; sort(w.begin(), w.end());</td>
+                <td class="to">var w:list&lt;int&gt; = sorted(v)</td>
+              </tr>
+              <tr>
+                <td>Invertir</td>
+                <td class="from">std::reverse(v.begin(), v.end());</td>
+                <td class="to">reversed(v)</td>
+              </tr>
+              <tr>
+                <td>A número de texto</td>
+                <td class="from">std::to_string(x)</td>
+                <td class="to">str(x)</td>
+              </tr>
+              <tr>
+                <td>De texto a número</td>
+                <td class="from">std::stoi(s)</td>
+                <td class="to">to_int(s)</td>
+              </tr>
+              <tr>
+                <td>Dividir una cadena</td>
+                <td class="from">sstream + getline</td>
+                <td class="to">split(s, ",")</td>
+              </tr>
+              <tr>
+                <td>Mayúsculas</td>
+                <td class="from">transform + toupper</td>
+                <td class="to">upper(s)</td>
+              </tr>
+              <tr>
+                <td>Buscar en un map</td>
+                <td class="from">m.find(k) != m.end()</td>
+                <td class="to">try: m[k] / catch error: …</td>
+              </tr>
+              <tr>
+                <td>Dormir 200 ms</td>
+                <td class="from">std::this_thread::sleep_for(…)</td>
+                <td class="to">sleep_ms(200)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <a class="btn btn-primary" href="docs.html">Continuar con la documentación</a>
+          <a class="btn btn-ghost" href="c.html">Ver también: C → Rivo</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Rivo · guía de conversión de C++</span>
+      <nav aria-label="Navegación del pie">
+        <a href="index.html">Inicio</a>
+        <a href="docs.html">Documentación</a>
+        <a href="python.html">Python</a>
+        <a href="godot.html">Godot</a>
+        <a href="c.html">C</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

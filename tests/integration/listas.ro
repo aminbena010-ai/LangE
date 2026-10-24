@@ -1,0 +1,16 @@
+fn main():
+    var l:list<int> = [1, 2]
+    l.add(3)
+    l.add(4)
+    print(len(l))
+    print(l.len())
+    print(l[0])
+    print(l[3])
+    l[0] = 9
+    print(l[0])
+    l.remove(4)
+    print(len(l))
+    var total:int = 0
+    for v in l:
+        total = total + v
+    print(total)

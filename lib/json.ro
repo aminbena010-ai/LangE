@@ -1,0 +1,167 @@
+# Biblioteca estandar: JSON plano.
+#
+# Solo map<string, string>: ni listas ni objetos anidados
+# ni numeros. Lo que no es JSON plano de un nivel aborta
+# en ejecucion con el aviso del runtime (decision de
+# diseno 2026-10-06, ver error.log).
+#
+# Uso:
+#     import json
+#     var m:map<string, string> = ["a": "1"]
+#     var texto:string = json.encode(m)
+#     var otra:map<string, string> = json.decode(texto)
+
+from text import strip
+
+fn encode(m:map<string, string>) -> string:
+    var resultado:string = "{"
+    var primero:bool = true
+
+    for clave in m:
+        if primero:
+            primero = false
+        else:
+            resultado = resultado + ","
+
+        resultado = resultado + "\"" + escape(clave) + "\":"
+        resultado = resultado + "\"" + escape(m[clave]) + "\""
+
+    return resultado + "}"
+
+fn decode(texto:string) -> map<string, string>:
+    var m:map<string, string> = []
+    var cuerpo:string = strip(texto)
+
+    if not starts_with(cuerpo, "{"):
+        return _invalid()
+
+    if not ends_with(cuerpo, "}"):
+        return _invalid()
+
+    cuerpo = substring(cuerpo, 1, len(cuerpo) - 2)
+
+    if len(cuerpo) >= 2:
+        if starts_with(cuerpo, "\"") and ends_with(cuerpo, "\""):
+            cuerpo = substring(cuerpo, 1, len(cuerpo) - 2)
+
+    if cuerpo == "":
+        return m
+
+    var trozos:list<string> = split(cuerpo, "\",\"")
+    var clave:string = ""
+    var valor:string = ""
+    var separador:int = 0
+
+    for trozo in trozos:
+        separador = find(trozo, "\":\"")
+
+        if separador < 0:
+            return _invalid()
+
+        clave = unescape(substring(trozo, 0, separador))
+        valor = unescape(substring(trozo, separador + 3, len(trozo) - separador - 3))
+
+        if starts_with(valor, "{") or starts_with(valor, "["):
+            return _invalid()
+
+        m[clave] = valor
+
+    return m
+
+fn escape(texto:string) -> string:
+    var resultado:string = ""
+    var resto:string = texto
+    var pos:int = 0
+    var desde:int = 0
+
+    while len(resto) > 0:
+        pos = _next_escape(resto)
+
+        if pos < 0:
+            resultado = resultado + resto
+            resto = ""
+        else:
+            resultado = resultado + substring(resto, 0, pos)
+            resultado = resultado + _escape_for(substring(resto, pos, 1))
+            desde = pos + 1
+            resto = substring(resto, desde, len(resto) - desde)
+
+    return resultado
+
+fn unescape(texto:string) -> string:
+    var resultado:string = ""
+    var resto:string = texto
+    var pos:int = 0
+    var escapado:string = ""
+    var desde:int = 0
+
+    while contains(resto, "\\"):
+        pos = find(resto, "\\")
+
+        resultado = resultado + substring(resto, 0, pos)
+        escapado = substring(resto, pos + 1, 1)
+
+        if escapado == "":
+            desde = pos + 1
+            resultado = resultado + "\\"
+        else:
+            desde = pos + 2
+            resultado = resultado + _unescape_for(escapado)
+
+        resto = substring(resto, desde, len(resto) - desde)
+
+    return resultado + resto
+
+fn _closest(a:int, b:int) -> int:
+    if b < 0:
+        return a
+    if a < 0:
+        return b
+    if b < a:
+        return b
+    return a
+
+fn _next_escape(texto:string) -> int:
+    var mejor:int = find(texto, "\\")
+    mejor = _closest(mejor, find(texto, "\""))
+    mejor = _closest(mejor, find(texto, "\n"))
+    mejor = _closest(mejor, find(texto, "\t"))
+    mejor = _closest(mejor, find(texto, "\r"))
+    return mejor
+
+fn _escape_for(letra:string) -> string:
+    if letra == "\\":
+        return "\\\\"
+    if letra == "\"":
+        return "\\\""
+    if letra == "\n":
+        return "\\n"
+    if letra == "\t":
+        return "\\t"
+    if letra == "\r":
+        return "\\r"
+    return letra
+
+fn _unescape_for(escapado:string) -> string:
+    if escapado == "n":
+        return "\n"
+    if escapado == "r":
+        return "\r"
+    if escapado == "t":
+        return "\t"
+    if escapado == "\"":
+        return "\""
+    if escapado == "\\":
+        return "\\"
+    if escapado == "0":
+        return ""
+    # Escapes que E++ no conoce: se devuelven tal cual.
+    return "\\" + escapado
+
+fn _invalid() -> map<string, string>:
+    var m:map<string, string> = []
+    # E++ no tiene throw: leer una clave que no existe aborta
+    # el programa con el aviso del runtime, y asi el JSON
+    # invalido no sigue en silencio.
+    var aviso:string = m["la entrada no es JSON plano valido"]
+    return m

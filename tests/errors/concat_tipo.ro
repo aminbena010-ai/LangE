@@ -1,0 +1,4 @@
+# concat solo admite string (claude.md §26.1)
+
+fn main():
+    print(concat("a", 1))

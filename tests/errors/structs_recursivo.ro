@@ -1,0 +1,5 @@
+struct Node:
+    var next:Node
+
+fn main():
+    pass

@@ -1,0 +1,7 @@
+import fnmatch
+
+fn main():
+    print(fnmatch.matches("report.txt", "*.txt"))
+    print(fnmatch.matches("ab", "a?"))
+    print(fnmatch.matches("report.csv", "*.txt"))
+    print(fnmatch.matches("abc", "a*d"))

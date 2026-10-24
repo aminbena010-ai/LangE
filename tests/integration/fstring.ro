@@ -1,0 +1,33 @@
+fn doble(n:int) -> int:
+    return n * 2
+
+fn main():
+    var M:string = "Amine Benapuiss"
+    print(f"hola {M}")
+
+    var edad:int = 20
+    var precio:float = 19.99
+    var activo:bool = true
+    var inicial:char = 'A'
+    print(f"{edad} {precio} {activo} {inicial}")
+
+    print(f"llaves {{ y }} sin interpolacion")
+    print(f"escape\ttab y salto\nen dos lineas")
+
+    var numeros:list<int> = [7, 8]
+    print(f"indice {numeros[1]} y longitud {numeros.len()}")
+
+    print(f"funcion {doble(4)}")
+
+    var mapa:map<string, string> = ["k": f"valor {M}"]
+    print(f"mapa {mapa["k"]}")
+
+    var asignado:string = f"asignado {edad}"
+    print(asignado)
+
+    print(f"a{M}b{M}c")
+
+    var vacio:string = f""
+    print(f"[{vacio}]")
+
+    print(f"concat " + f"con {edad}")

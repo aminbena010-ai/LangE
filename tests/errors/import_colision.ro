@@ -1,0 +1,7 @@
+import math
+
+fn sum(a:int, b:int) -> int:
+    return 99
+
+fn main():
+    print(1)

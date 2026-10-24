@@ -1,0 +1,5 @@
+# Suma fuera del rango de int: debe abortar con OverflowError.
+
+fn main():
+    var maximo:int = 9223372036854775807
+    print(maximo + 1)

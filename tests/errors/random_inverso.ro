@@ -1,0 +1,6 @@
+# random() con el minimo mayor que el maximo aborta en
+# ejecución (decisión de diseño 2026-10-06).
+
+fn main():
+    seed(1)
+    print(random(10, 1))

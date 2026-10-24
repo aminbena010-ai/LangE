@@ -1,0 +1,10 @@
+# Módulo que declara funciones externas de C.
+
+external "../fixtures/demo.c" fn sum(a:int, b:int) -> int
+external "../fixtures/demo.c" fn saludo(nombre:string)
+
+fn doble(x:int) -> int:
+    return sum(x, x)
+
+fn presentar(nombre:string):
+    saludo(nombre)
